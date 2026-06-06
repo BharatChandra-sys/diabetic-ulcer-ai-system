@@ -1,0 +1,2854 @@
+{
+  "timestamp": "2026-06-06T19:20:37.399271",
+  "backend": {
+    "files": [
+      {
+        "path": "backend\\fix_database.py",
+        "lines": 192,
+        "imports": [
+          "argparse",
+          "os",
+          "app.models",
+          "sys",
+          "app.auth.password_utils",
+          "pathlib",
+          "logging",
+          "app.database"
+        ],
+        "classes": [],
+        "functions": [
+          "check_database",
+          "list_users",
+          "clean_users",
+          "reset_database",
+          "main"
+        ],
+        "routes": [],
+        "docstrings": 5,
+        "comments": 6,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\health_check.py",
+        "lines": 56,
+        "imports": [
+          "requests",
+          "urllib.parse",
+          "sys"
+        ],
+        "classes": [],
+        "functions": [
+          "check_health",
+          "main"
+        ],
+        "routes": [],
+        "docstrings": 2,
+        "comments": 1,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\init_db.py",
+        "lines": 133,
+        "imports": [
+          "argparse",
+          "os",
+          "app.models",
+          "sys",
+          "pathlib",
+          "logging",
+          "app.database"
+        ],
+        "classes": [],
+        "functions": [
+          "init_db",
+          "create_sample_user",
+          "verify_migration"
+        ],
+        "routes": [],
+        "docstrings": 4,
+        "comments": 5,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\reset_external_db.py",
+        "lines": 78,
+        "imports": [
+          "argparse",
+          "os",
+          "app.models",
+          "sys",
+          "pathlib",
+          "logging",
+          "app.database"
+        ],
+        "classes": [],
+        "functions": [
+          "reset_sqlite_db",
+          "main"
+        ],
+        "routes": [],
+        "docstrings": 2,
+        "comments": 6,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\startup_check.py",
+        "lines": 163,
+        "imports": [
+          "pathlib",
+          "os",
+          "sys"
+        ],
+        "classes": [],
+        "functions": [
+          "check_environment",
+          "check_model_files",
+          "check_dependencies",
+          "check_directory_structure",
+          "main"
+        ],
+        "routes": [],
+        "docstrings": 5,
+        "comments": 6,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\train_dfu_model.py",
+        "lines": 153,
+        "imports": [
+          "torch.utils.data",
+          "app.ml.dataset_loader",
+          "os",
+          "time",
+          "torch.optim",
+          "sys",
+          "app.ml.cnn_model",
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [],
+        "functions": [
+          "train"
+        ],
+        "routes": [],
+        "docstrings": 1,
+        "comments": 9,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\config.py",
+        "lines": 164,
+        "imports": [
+          "pydantic",
+          "os",
+          "logging",
+          "pydantic_settings",
+          "typing"
+        ],
+        "classes": [
+          "Settings"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 5,
+        "comments": 13,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\database.py",
+        "lines": 28,
+        "imports": [
+          "sqlalchemy.orm",
+          "sqlalchemy",
+          "backend.app.config",
+          "logging"
+        ],
+        "classes": [],
+        "functions": [
+          "get_db"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 2,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\main.py",
+        "lines": 53,
+        "imports": [
+          "fastapi",
+          "backend.app",
+          "os",
+          "backend.app.routes",
+          "fastapi.staticfiles",
+          "backend.app.config",
+          "prometheus_client",
+          "fastapi.middleware.cors",
+          "logging",
+          "backend.app.database",
+          "backend.app.auth.auth_router"
+        ],
+        "classes": [],
+        "functions": [
+          "root"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 1,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\models.py",
+        "lines": 81,
+        "imports": [
+          "sqlalchemy.orm",
+          "sqlalchemy",
+          "datetime",
+          "backend.app.database"
+        ],
+        "classes": [
+          "User",
+          "Patient",
+          "PredictionLog",
+          "UlcerImage",
+          "HealthMetrics"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\schemas.py",
+        "lines": 95,
+        "imports": [
+          "typing",
+          "datetime",
+          "pydantic"
+        ],
+        "classes": [
+          "UserBase",
+          "UserCreate",
+          "UserLogin",
+          "UserResponse",
+          "PatientBase",
+          "PatientCreate",
+          "PatientResponse",
+          "PredictionRequest",
+          "PredictionResponse",
+          "UlcerImageResponse",
+          "PatientProgressionResponse",
+          "TokenResponse",
+          "UserForgotPassword",
+          "UserResetPassword"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\__init__.py",
+        "lines": 1,
+        "imports": [],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\api\\router.py",
+        "lines": 10,
+        "imports": [
+          "fastapi",
+          "backend.app.api.routes"
+        ],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\api\\routes\\clinical_data.py",
+        "lines": 15,
+        "imports": [
+          "fastapi"
+        ],
+        "classes": [],
+        "functions": [
+          "get_clinical_data_example"
+        ],
+        "routes": [
+          [
+            "get",
+            "/clinical-data/example"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\api\\routes\\health.py",
+        "lines": 9,
+        "imports": [
+          "fastapi"
+        ],
+        "classes": [],
+        "functions": [
+          "health_check"
+        ],
+        "routes": [
+          [
+            "get",
+            "/health"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\api\\routes\\predict.py",
+        "lines": 31,
+        "imports": [
+          "fastapi",
+          "backend.app.services.report_service",
+          "backend.app.schemas.predict_schema",
+          "logging",
+          "backend.app.pipelines.inference_pipeline",
+          "backend.app.pipelines.explainability_pipeline"
+        ],
+        "classes": [],
+        "functions": [
+          "predict"
+        ],
+        "routes": [
+          [
+            "post",
+            "/predict"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\api\\routes\\reports.py",
+        "lines": 99,
+        "imports": [
+          "fastapi",
+          "datetime",
+          "logging",
+          "pydantic",
+          "typing"
+        ],
+        "classes": [
+          "ReportRequest"
+        ],
+        "functions": [
+          "generate_report",
+          "list_patient_reports",
+          "get_report",
+          "export_report"
+        ],
+        "routes": [
+          [
+            "post",
+            "/generate"
+          ],
+          [
+            "get",
+            "/list/{patient_id}"
+          ],
+          [
+            "get",
+            "/{report_id}"
+          ],
+          [
+            "post",
+            "/{report_id}/export"
+          ]
+        ],
+        "docstrings": 6,
+        "comments": 4,
+        "todos": [
+          "Implement report generation pipeline",
+          "Query reports from database",
+          "Query report from database",
+          "Implement export functionality"
+        ],
+        "async_functions": 4
+      },
+      {
+        "path": "backend\\app\\api\\routes\\upload_image.py",
+        "lines": 70,
+        "imports": [
+          "fastapi",
+          "fastapi.responses",
+          "logging"
+        ],
+        "classes": [],
+        "functions": [
+          "upload_image",
+          "list_images"
+        ],
+        "routes": [
+          [
+            "post",
+            "/upload"
+          ],
+          [
+            "get",
+            "/list"
+          ]
+        ],
+        "docstrings": 3,
+        "comments": 3,
+        "todos": [
+          "Implement database query to get list of images"
+        ],
+        "async_functions": 2
+      },
+      {
+        "path": "backend\\app\\auth\\auth_router.py",
+        "lines": 144,
+        "imports": [
+          "fastapi",
+          "backend.app.auth.dependencies",
+          "backend.app.auth.password_utils",
+          "backend.app.auth.jwt_handler",
+          "datetime",
+          "backend.app.models",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "backend.app.auth.password_reset_handler",
+          "backend.app.schemas"
+        ],
+        "classes": [],
+        "functions": [
+          "register",
+          "login",
+          "get_current_user_info",
+          "forgot_password",
+          "reset_password"
+        ],
+        "routes": [
+          [
+            "post",
+            "/register"
+          ],
+          [
+            "post",
+            "/login"
+          ],
+          [
+            "get",
+            "/me"
+          ],
+          [
+            "post",
+            "/forgot-password"
+          ],
+          [
+            "post",
+            "/reset-password"
+          ]
+        ],
+        "docstrings": 3,
+        "comments": 12,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\auth\\dependencies.py",
+        "lines": 28,
+        "imports": [
+          "fastapi",
+          "backend.app.models",
+          "fastapi.security",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "backend.app.auth.jwt_handler"
+        ],
+        "classes": [],
+        "functions": [
+          "get_current_user"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\auth\\jwt_handler.py",
+        "lines": 26,
+        "imports": [
+          "typing",
+          "backend.app.config",
+          "jose",
+          "datetime"
+        ],
+        "classes": [],
+        "functions": [
+          "create_access_token",
+          "decode_token"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\auth\\password_reset_handler.py",
+        "lines": 166,
+        "imports": [
+          "smtplib",
+          "backend.app.core.logger",
+          "datetime",
+          "backend.app.config",
+          "jose",
+          "email.mime.text",
+          "email.mime.multipart",
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "generate_password_reset_token",
+          "verify_password_reset_token",
+          "send_password_reset_email"
+        ],
+        "routes": [],
+        "docstrings": 5,
+        "comments": 5,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\auth\\password_utils.py",
+        "lines": 30,
+        "imports": [
+          "passlib.context",
+          "hashlib"
+        ],
+        "classes": [],
+        "functions": [
+          "hash_password",
+          "verify_password"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 4,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\auth\\__init__.py",
+        "lines": 1,
+        "imports": [],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\core\\config.py",
+        "lines": 27,
+        "imports": [
+          "os",
+          "functools",
+          "pydantic"
+        ],
+        "classes": [
+          "Settings"
+        ],
+        "functions": [
+          "get_settings"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\core\\logger.py",
+        "lines": 55,
+        "imports": [
+          "os",
+          "logging.handlers",
+          "pathlib",
+          "logging"
+        ],
+        "classes": [],
+        "functions": [
+          "get_logger"
+        ],
+        "routes": [],
+        "docstrings": 2,
+        "comments": 5,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\core\\security.py",
+        "lines": 1,
+        "imports": [],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\core\\settings.py",
+        "lines": 81,
+        "imports": [
+          "typing",
+          "pydantic",
+          "pydantic_settings"
+        ],
+        "classes": [
+          "Settings"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 3,
+        "comments": 13,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\db\\database.py",
+        "lines": 15,
+        "imports": [
+          "backend.app.core.config",
+          "sqlalchemy.orm",
+          "sqlalchemy"
+        ],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\db\\models.py",
+        "lines": 11,
+        "imports": [
+          "sqlalchemy",
+          "backend.app.db.database"
+        ],
+        "classes": [
+          "PredictionLog"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\feature_importance.py",
+        "lines": 264,
+        "imports": [
+          "numpy",
+          "typing",
+          "torch",
+          "logging"
+        ],
+        "classes": [
+          "FeatureImportance"
+        ],
+        "functions": [
+          "compute_fidelity",
+          "create_feature_importance"
+        ],
+        "routes": [],
+        "docstrings": 9,
+        "comments": 18,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\gradcam.py",
+        "lines": 211,
+        "imports": [
+          "cv2",
+          "torchvision.transforms",
+          "os",
+          "sys",
+          "numpy",
+          "torch.nn.functional",
+          "PIL",
+          "torch"
+        ],
+        "classes": [
+          "GradCAM"
+        ],
+        "functions": [
+          "generate_gradcam_from_tensor",
+          "generate_gradcam"
+        ],
+        "routes": [],
+        "docstrings": 7,
+        "comments": 20,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\gradcam_refactored.py",
+        "lines": 211,
+        "imports": [
+          "cv2",
+          "torchvision.transforms",
+          "os",
+          "sys",
+          "numpy",
+          "torch.nn.functional",
+          "PIL",
+          "torch"
+        ],
+        "classes": [
+          "GradCAM"
+        ],
+        "functions": [
+          "generate_gradcam_from_tensor",
+          "generate_gradcam"
+        ],
+        "routes": [],
+        "docstrings": 7,
+        "comments": 20,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\heatmap_renderer.py",
+        "lines": 194,
+        "imports": [
+          "base64",
+          "cv2",
+          "os",
+          "numpy",
+          "PIL",
+          "io",
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "render_heatmap_overlay",
+          "render_heatmap_with_original",
+          "save_heatmap_overlay"
+        ],
+        "routes": [],
+        "docstrings": 4,
+        "comments": 27,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\lime_explainer.py",
+        "lines": 106,
+        "imports": [
+          "numpy",
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "generate_lime_explanation",
+          "_map_infection_value",
+          "_generate_lime_text"
+        ],
+        "routes": [],
+        "docstrings": 4,
+        "comments": 7,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\explainability\\shap_explainer.py",
+        "lines": 56,
+        "imports": [
+          "numpy",
+          "torch"
+        ],
+        "classes": [
+          "ShapExplainer"
+        ],
+        "functions": [
+          "generate_shap_values"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 2,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\cnn_model.py",
+        "lines": 40,
+        "imports": [
+          "torchvision.models",
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [
+          "UlcerCNNModel"
+        ],
+        "functions": [
+          "create_model"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\dataset_loader.py",
+        "lines": 72,
+        "imports": [
+          "torch.utils.data",
+          "torchvision.transforms",
+          "os",
+          "PIL",
+          "shutil",
+          "zipfile",
+          "torch"
+        ],
+        "classes": [
+          "UlcerDataset"
+        ],
+        "functions": [
+          "load_dataset"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\multimodal_model.py",
+        "lines": 41,
+        "imports": [
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [
+          "MultimodalUlcerModel"
+        ],
+        "functions": [
+          "create_multimodal_model"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\preprocess.py",
+        "lines": 64,
+        "imports": [
+          "torchvision.transforms",
+          "os",
+          "PIL",
+          "numpy",
+          "io",
+          "torch",
+          "requests"
+        ],
+        "classes": [],
+        "functions": [
+          "get_preprocessing_transforms",
+          "resolve_image_path",
+          "download_image",
+          "preprocess_image",
+          "preprocess_clinical_data"
+        ],
+        "routes": [],
+        "docstrings": 1,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\segmentation_model.py",
+        "lines": 29,
+        "imports": [
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [
+          "SegmentationModel"
+        ],
+        "functions": [
+          "create_segmentation_model"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\train.py",
+        "lines": 68,
+        "imports": [
+          "backend.app.ml.cnn_model",
+          "torch.optim",
+          "backend.app.config",
+          "backend.app.ml.dataset_loader",
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [],
+        "functions": [
+          "train_model"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml\\ulcer_area_estimator.py",
+        "lines": 43,
+        "imports": [
+          "os",
+          "numpy",
+          "PIL",
+          "io",
+          "requests"
+        ],
+        "classes": [],
+        "functions": [
+          "resolve_image_path",
+          "estimate_ulcer_area"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml_models\\cnn_ulcer_model.py",
+        "lines": 89,
+        "imports": [
+          "torch.nn",
+          "torch",
+          "logging",
+          "torchvision"
+        ],
+        "classes": [
+          "CNNUlcerModel"
+        ],
+        "functions": [
+          "create_cnn_model"
+        ],
+        "routes": [],
+        "docstrings": 6,
+        "comments": 2,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml_models\\load_model.py",
+        "lines": 169,
+        "imports": [
+          "backend.app.ml_models.cnn_ulcer_model",
+          "torch",
+          "backend.app.ml_models.segmentation_model",
+          "backend.app.core.settings",
+          "pathlib",
+          "logging",
+          "typing",
+          "backend.app.ml_models.multimodal_model"
+        ],
+        "classes": [
+          "ModelLoader"
+        ],
+        "functions": [
+          "get_cnn_model",
+          "get_segmentation_model",
+          "get_multimodal_model"
+        ],
+        "routes": [],
+        "docstrings": 9,
+        "comments": 3,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml_models\\multimodal_model.py",
+        "lines": 157,
+        "imports": [
+          "torch.nn",
+          "typing",
+          "torch",
+          "logging"
+        ],
+        "classes": [
+          "MultimodalModel"
+        ],
+        "functions": [
+          "create_multimodal_model"
+        ],
+        "routes": [],
+        "docstrings": 6,
+        "comments": 10,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml_models\\segmentation_model.py",
+        "lines": 26,
+        "imports": [
+          "torch.nn",
+          "torch"
+        ],
+        "classes": [
+          "SegmentationModel"
+        ],
+        "functions": [
+          "create_segmentation_model"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\ml_models\\__init__.py",
+        "lines": 32,
+        "imports": [
+          ".multimodal_model",
+          ".models",
+          ".segmentation_model",
+          ".cnn_ulcer_model"
+        ],
+        "classes": [],
+        "functions": [
+          "get_cnn_model",
+          "get_segmentation_model",
+          "get_multimodal_model",
+          "clear_model_cache"
+        ],
+        "routes": [],
+        "docstrings": 1,
+        "comments": 3,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\monitoring\\metrics.py",
+        "lines": 39,
+        "imports": [
+          "prometheus_client",
+          "time"
+        ],
+        "classes": [],
+        "functions": [
+          "track_prediction",
+          "track_inference_time",
+          "increment_active_requests",
+          "decrement_active_requests"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\pipelines\\explainability_pipeline.py",
+        "lines": 6,
+        "imports": [
+          "backend.app.explainability.lime_explainer"
+        ],
+        "classes": [],
+        "functions": [
+          "run_explainability_pipeline"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\pipelines\\inference_pipeline.py",
+        "lines": 10,
+        "imports": [
+          "backend.app.services.ml_service"
+        ],
+        "classes": [],
+        "functions": [
+          "run_inference_pipeline"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\pipelines\\preprocessing_pipeline.py",
+        "lines": 152,
+        "imports": [
+          "torchvision.transforms",
+          "numpy",
+          "PIL",
+          "logging",
+          "typing",
+          "torch"
+        ],
+        "classes": [
+          "PreprocessingPipeline"
+        ],
+        "functions": [
+          "create_preprocessing_pipeline"
+        ],
+        "routes": [],
+        "docstrings": 7,
+        "comments": 3,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\pipelines\\report_pipeline.py",
+        "lines": 191,
+        "imports": [
+          "logging",
+          "typing",
+          "datetime",
+          "pydantic"
+        ],
+        "classes": [
+          "ReportData",
+          "ReportPipeline"
+        ],
+        "functions": [
+          "create_report_pipeline"
+        ],
+        "routes": [],
+        "docstrings": 10,
+        "comments": 3,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\diagnostics.py",
+        "lines": 182,
+        "imports": [
+          "fastapi",
+          "backend.app.models",
+          "backend.app.config",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "health_check",
+          "list_users_diagnostic",
+          "check_email_diagnostic",
+          "database_info",
+          "reset_warning"
+        ],
+        "routes": [
+          [
+            "get",
+            "/health"
+          ],
+          [
+            "get",
+            "/users"
+          ],
+          [
+            "post",
+            "/check-email/{email}"
+          ],
+          [
+            "get",
+            "/info"
+          ],
+          [
+            "post",
+            "/reset-warning"
+          ]
+        ],
+        "docstrings": 6,
+        "comments": 2,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\health.py",
+        "lines": 67,
+        "imports": [
+          "os",
+          "fastapi",
+          "psutil",
+          "datetime"
+        ],
+        "classes": [],
+        "functions": [
+          "health_check",
+          "ping",
+          "readiness",
+          "liveness",
+          "detailed_status"
+        ],
+        "routes": [
+          [
+            "get",
+            "/"
+          ],
+          [
+            "get",
+            "/ping"
+          ],
+          [
+            "get",
+            "/ready"
+          ],
+          [
+            "get",
+            "/live"
+          ],
+          [
+            "get",
+            "/status"
+          ]
+        ],
+        "docstrings": 5,
+        "comments": 1,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\health_metrics.py",
+        "lines": 343,
+        "imports": [
+          "fastapi",
+          "pydantic",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "typing"
+        ],
+        "classes": [
+          "HealthMetricsRequest",
+          "HealthAssessmentResponse",
+          "HealthMetricsCalculator"
+        ],
+        "functions": [
+          "assess_health_metrics",
+          "calculate_ulcer_risk",
+          "generate_health_report"
+        ],
+        "routes": [
+          [
+            "post",
+            "/assess"
+          ],
+          [
+            "post",
+            "/calculate-ulcer-risk"
+          ],
+          [
+            "post",
+            "/generate-report"
+          ]
+        ],
+        "docstrings": 11,
+        "comments": 19,
+        "todos": [],
+        "async_functions": 3
+      },
+      {
+        "path": "backend\\app\\routes\\patients.py",
+        "lines": 36,
+        "imports": [
+          "fastapi",
+          "backend.app.auth.dependencies",
+          "backend.app.models",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "backend.app.services.patient_service",
+          "backend.app.schemas"
+        ],
+        "classes": [],
+        "functions": [
+          "create_patient_endpoint",
+          "list_patients",
+          "get_patient_endpoint",
+          "delete_patient_endpoint"
+        ],
+        "routes": [
+          [
+            "post",
+            "/"
+          ],
+          [
+            "get",
+            "/"
+          ],
+          [
+            "get",
+            "/{patient_id}"
+          ],
+          [
+            "delete",
+            "/{patient_id}"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\patient_progression.py",
+        "lines": 62,
+        "imports": [
+          "fastapi",
+          "sqlalchemy.orm",
+          "backend.app.auth.dependencies",
+          "backend.app.models",
+          "backend.app.services.progression_service",
+          "backend.app.services.inference_service",
+          "backend.app.database",
+          "backend.app.services.image_service",
+          "backend.app.services.patient_service"
+        ],
+        "classes": [],
+        "functions": [
+          "upload_patient_image",
+          "get_patient_timeline_endpoint",
+          "get_progression_endpoint"
+        ],
+        "routes": [
+          [
+            "post",
+            "/{patient_id}/upload-image"
+          ],
+          [
+            "get",
+            "/{patient_id}/timeline"
+          ],
+          [
+            "get",
+            "/{patient_id}/progression"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\routes\\predict.py",
+        "lines": 60,
+        "imports": [
+          "fastapi",
+          "backend.app.auth.dependencies",
+          "backend.app.services.report_service",
+          "backend.app.models",
+          "backend.app.monitoring.metrics",
+          "time",
+          "backend.app.services.inference_service",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "backend.app.schemas"
+        ],
+        "classes": [],
+        "functions": [
+          "predict"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\routes\\reports.py",
+        "lines": 112,
+        "imports": [
+          "fastapi",
+          "backend.app.auth.dependencies",
+          "fastapi.responses",
+          "datetime",
+          "backend.app.services.report_service",
+          "backend.app.models",
+          "io",
+          "backend.app.database",
+          "sqlalchemy.orm",
+          "backend.app.services.pdf_service"
+        ],
+        "classes": [],
+        "functions": [
+          "get_prediction_report",
+          "export_prediction_pdf",
+          "export_patient_analysis_pdf"
+        ],
+        "routes": [
+          [
+            "get",
+            "/predictions"
+          ],
+          [
+            "get",
+            "/export-pdf/{prediction_id}"
+          ],
+          [
+            "get",
+            "/export-patient-pdf/{patient_id}"
+          ]
+        ],
+        "docstrings": 2,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\statistics.py",
+        "lines": 162,
+        "imports": [
+          "fastapi",
+          "backend.app.auth.dependencies",
+          "datetime",
+          "backend.app.models",
+          "sqlalchemy",
+          "backend.app.database",
+          "sqlalchemy.orm"
+        ],
+        "classes": [],
+        "functions": [
+          "get_dashboard_stats",
+          "get_patient_analysis_history",
+          "get_clinical_summary"
+        ],
+        "routes": [
+          [
+            "get",
+            "/dashboard"
+          ],
+          [
+            "get",
+            "/patients/{patient_id}/history"
+          ],
+          [
+            "get",
+            "/clinical-summary"
+          ]
+        ],
+        "docstrings": 3,
+        "comments": 9,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\routes\\upload.py",
+        "lines": 14,
+        "imports": [
+          "fastapi",
+          "sqlalchemy.orm",
+          "backend.app.auth.dependencies",
+          "backend.app.models",
+          "backend.app.database",
+          "backend.app.services.image_service"
+        ],
+        "classes": [],
+        "functions": [
+          "upload_image_endpoint"
+        ],
+        "routes": [
+          [
+            "post",
+            "/upload"
+          ]
+        ],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\routes\\__init__.py",
+        "lines": 1,
+        "imports": [],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\schemas\\clinical_schema.py",
+        "lines": 88,
+        "imports": [
+          "typing",
+          "datetime",
+          "pydantic"
+        ],
+        "classes": [
+          "ClinicalDataInput",
+          "ClinicalDataResponse",
+          "RiskAssessment",
+          "ClinicalDataQuery"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 5,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\schemas\\image_schema.py",
+        "lines": 65,
+        "imports": [
+          "typing",
+          "datetime",
+          "pydantic"
+        ],
+        "classes": [
+          "ImageMetadata",
+          "ImageUploadResponse",
+          "ImageQualityReport",
+          "ImageProcessingRequest",
+          "SegmentationResult",
+          "ImageListResponse"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 7,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\schemas\\predict_schema.py",
+        "lines": 8,
+        "imports": [
+          "pydantic"
+        ],
+        "classes": [
+          "PredictionRequest",
+          "PredictionResponse"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\schemas\\report_schema.py",
+        "lines": 90,
+        "imports": [
+          "typing",
+          "datetime",
+          "pydantic"
+        ],
+        "classes": [
+          "PredictionData",
+          "ClinicalFindings",
+          "ReportGenerationRequest",
+          "ReportData",
+          "ReportExportRequest",
+          "ReportExportResponse",
+          "ReportListResponse",
+          "ReportSummary",
+          "ComparisonReport"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 10,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\clinical_data_service.py",
+        "lines": 290,
+        "imports": [
+          "datetime",
+          "logging",
+          "pydantic",
+          "typing",
+          "pandas"
+        ],
+        "classes": [
+          "ClinicalDataModel",
+          "ClinicalDataService"
+        ],
+        "functions": [
+          "create_clinical_data_service"
+        ],
+        "routes": [],
+        "docstrings": 13,
+        "comments": 7,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\image_service.py",
+        "lines": 47,
+        "imports": [
+          "fastapi",
+          "backend.app.utils.cloud_storage",
+          "os",
+          "uuid",
+          "backend.app.utils.validators"
+        ],
+        "classes": [],
+        "functions": [
+          "upload_image",
+          "delete_image",
+          "process_uploaded_image"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 1,
+        "todos": [],
+        "async_functions": 1
+      },
+      {
+        "path": "backend\\app\\services\\inference_service.py",
+        "lines": 285,
+        "imports": [
+          "backend.app.explainability.gradcam",
+          "backend.app.ml.preprocess",
+          "backend.app.explainability.heatmap_renderer",
+          "backend.app.ml.ulcer_area_estimator",
+          "time",
+          "numpy",
+          "backend.app.explainability.lime_explainer",
+          "logging",
+          "torch",
+          "backend.app.services.model_loader"
+        ],
+        "classes": [],
+        "functions": [
+          "calculate_risk_score",
+          "classify_risk_level",
+          "get_severity",
+          "generate_explanation",
+          "get_recommendations",
+          "run_inference"
+        ],
+        "routes": [],
+        "docstrings": 4,
+        "comments": 25,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\ml_service.py",
+        "lines": 10,
+        "imports": [],
+        "classes": [],
+        "functions": [
+          "run_prediction"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\model_loader.py",
+        "lines": 129,
+        "imports": [
+          "backend.app.ml.cnn_model",
+          "backend.app.ml.multimodal_model",
+          "os",
+          "backend.app.config",
+          "logging",
+          "torch"
+        ],
+        "classes": [],
+        "functions": [
+          "load_cnn_model",
+          "load_multimodal_model",
+          "load_segmentation_model",
+          "get_model",
+          "get_segmentation_model"
+        ],
+        "routes": [],
+        "docstrings": 2,
+        "comments": 5,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\patient_service.py",
+        "lines": 31,
+        "imports": [
+          "sqlalchemy.orm",
+          "backend.app.models",
+          "backend.app.schemas"
+        ],
+        "classes": [],
+        "functions": [
+          "create_patient",
+          "get_patient",
+          "get_user_patients",
+          "delete_patient"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\pdf_service.py",
+        "lines": 303,
+        "imports": [
+          "datetime",
+          "os",
+          "io",
+          "logging",
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "generate_prediction_report_pdf",
+          "generate_patient_analysis_pdf"
+        ],
+        "routes": [],
+        "docstrings": 3,
+        "comments": 17,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\progression_service.py",
+        "lines": 56,
+        "imports": [
+          "sqlalchemy.orm",
+          "backend.app.models",
+          "backend.app.schemas"
+        ],
+        "classes": [],
+        "functions": [
+          "get_patient_timeline",
+          "analyze_progression",
+          "add_ulcer_image"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\services\\report_service.py",
+        "lines": 45,
+        "imports": [
+          "sqlalchemy.orm",
+          "backend.app.models",
+          "datetime"
+        ],
+        "classes": [],
+        "functions": [
+          "generate_prediction_report",
+          "save_prediction_log"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\utils\\cloud_storage.py",
+        "lines": 50,
+        "imports": [
+          "backend.app.config",
+          "PIL",
+          "io",
+          "cloudinary.uploader",
+          "cloudinary"
+        ],
+        "classes": [],
+        "functions": [
+          "upload_image_to_cloud",
+          "delete_image_from_cloud",
+          "generate_thumbnail_url"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\utils\\helpers.py",
+        "lines": 212,
+        "imports": [
+          "hashlib",
+          "datetime",
+          "json",
+          "numpy",
+          "logging",
+          "typing"
+        ],
+        "classes": [
+          "DataHelper",
+          "MathHelper",
+          "StringHelper",
+          "TimeHelper",
+          "ValidationHelper"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 24,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\utils\\image_processing.py",
+        "lines": 287,
+        "imports": [
+          "cv2",
+          "numpy",
+          "PIL",
+          "logging",
+          "typing"
+        ],
+        "classes": [
+          "ImageProcessor"
+        ],
+        "functions": [
+          "create_image_processor"
+        ],
+        "routes": [],
+        "docstrings": 13,
+        "comments": 7,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\utils\\metrics.py",
+        "lines": 25,
+        "imports": [
+          "typing"
+        ],
+        "classes": [],
+        "functions": [
+          "accuracy",
+          "precision",
+          "recall"
+        ],
+        "routes": [],
+        "docstrings": 0,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\utils\\validators.py",
+        "lines": 145,
+        "imports": [
+          "os",
+          "typing",
+          "backend.app.config"
+        ],
+        "classes": [
+          "InputValidator",
+          "ModelOutputValidator"
+        ],
+        "functions": [
+          "validate_image_extension",
+          "validate_image_size",
+          "validate_clinical_data",
+          "validate_infection_signs",
+          "validate_input"
+        ],
+        "routes": [],
+        "docstrings": 8,
+        "comments": 2,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\workers\\background_tasks.py",
+        "lines": 304,
+        "imports": [
+          "datetime",
+          "asyncio",
+          "enum",
+          "logging",
+          "typing"
+        ],
+        "classes": [
+          "TaskStatus",
+          "Task",
+          "TaskQueue",
+          "ScheduledTask",
+          "TaskScheduler"
+        ],
+        "functions": [],
+        "routes": [],
+        "docstrings": 23,
+        "comments": 1,
+        "todos": [],
+        "async_functions": 0
+      },
+      {
+        "path": "backend\\app\\workers\\__init__.py",
+        "lines": 2,
+        "imports": [],
+        "classes": [],
+        "functions": [],
+        "routes": [],
+        "docstrings": 1,
+        "comments": 0,
+        "todos": [],
+        "async_functions": 0
+      }
+    ],
+    "total_files": 83,
+    "total_lines": 7797,
+    "total_routes": 41,
+    "all_routes": [
+      [
+        "get",
+        "/clinical-data/example"
+      ],
+      [
+        "get",
+        "/health"
+      ],
+      [
+        "post",
+        "/predict"
+      ],
+      [
+        "post",
+        "/generate"
+      ],
+      [
+        "get",
+        "/list/{patient_id}"
+      ],
+      [
+        "get",
+        "/{report_id}"
+      ],
+      [
+        "post",
+        "/{report_id}/export"
+      ],
+      [
+        "post",
+        "/upload"
+      ],
+      [
+        "get",
+        "/list"
+      ],
+      [
+        "post",
+        "/register"
+      ],
+      [
+        "post",
+        "/login"
+      ],
+      [
+        "get",
+        "/me"
+      ],
+      [
+        "post",
+        "/forgot-password"
+      ],
+      [
+        "post",
+        "/reset-password"
+      ],
+      [
+        "get",
+        "/health"
+      ],
+      [
+        "get",
+        "/users"
+      ],
+      [
+        "post",
+        "/check-email/{email}"
+      ],
+      [
+        "get",
+        "/info"
+      ],
+      [
+        "post",
+        "/reset-warning"
+      ],
+      [
+        "get",
+        "/"
+      ],
+      [
+        "get",
+        "/ping"
+      ],
+      [
+        "get",
+        "/ready"
+      ],
+      [
+        "get",
+        "/live"
+      ],
+      [
+        "get",
+        "/status"
+      ],
+      [
+        "post",
+        "/assess"
+      ],
+      [
+        "post",
+        "/calculate-ulcer-risk"
+      ],
+      [
+        "post",
+        "/generate-report"
+      ],
+      [
+        "post",
+        "/"
+      ],
+      [
+        "get",
+        "/"
+      ],
+      [
+        "get",
+        "/{patient_id}"
+      ],
+      [
+        "delete",
+        "/{patient_id}"
+      ],
+      [
+        "post",
+        "/{patient_id}/upload-image"
+      ],
+      [
+        "get",
+        "/{patient_id}/timeline"
+      ],
+      [
+        "get",
+        "/{patient_id}/progression"
+      ],
+      [
+        "get",
+        "/predictions"
+      ],
+      [
+        "get",
+        "/export-pdf/{prediction_id}"
+      ],
+      [
+        "get",
+        "/export-patient-pdf/{patient_id}"
+      ],
+      [
+        "get",
+        "/dashboard"
+      ],
+      [
+        "get",
+        "/patients/{patient_id}/history"
+      ],
+      [
+        "get",
+        "/clinical-summary"
+      ],
+      [
+        "post",
+        "/upload"
+      ]
+    ]
+  },
+  "frontend": {
+    "files": [
+      {
+        "path": "frontend\\src\\App.jsx",
+        "lines": 46,
+        "imports": [
+          "./pages/Signup",
+          "./pages/Dashboard",
+          "./pages/ChatbotWorkspace",
+          "./pages/History",
+          "./pages/ResetPassword",
+          "./pages/AccountSettings",
+          "./pages/ScanResults",
+          "./pages/Login",
+          "./pages/FootScanAnalysis",
+          "./services/api",
+          "react",
+          "react-router-dom",
+          "./pages/ForgotPassword",
+          "./pages/HealthMetricsResults"
+        ],
+        "components": [
+          "ProtectedRoute",
+          "App"
+        ],
+        "functions": [
+          "ProtectedRoute",
+          "App"
+        ],
+        "hooks": [
+          "Memo",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 1,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\main.jsx",
+        "lines": 14,
+        "imports": [
+          "./App.jsx",
+          "react-router-dom",
+          "react",
+          "react-dom/client"
+        ],
+        "components": [],
+        "functions": [],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\components\\ChatbotPanel.jsx",
+        "lines": 83,
+        "imports": [
+          "react"
+        ],
+        "components": [
+          "ChatbotPanel"
+        ],
+        "functions": [
+          "canned",
+          "getReply",
+          "text",
+          "ChatbotPanel",
+          "canSend",
+          "sendMessage",
+          "userText",
+          "user",
+          "bot"
+        ],
+        "hooks": [
+          "Memo",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\components\\DashboardHeader.jsx",
+        "lines": 156,
+        "imports": [
+          "react-router-dom",
+          "react"
+        ],
+        "components": [
+          "DashboardHeader"
+        ],
+        "functions": [
+          "DashboardHeader",
+          "navigate",
+          "patientProfile",
+          "userName",
+          "handleLogout"
+        ],
+        "hooks": [
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 6,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\components\\HealthMetricsForm.jsx",
+        "lines": 313,
+        "imports": [
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "MetricCard",
+          "HealthMetricsForm"
+        ],
+        "functions": [
+          "MetricCard",
+          "HealthMetricsForm",
+          "debounceTimer",
+          "handleAgeChange",
+          "numValue",
+          "handleBmiChange",
+          "numValue",
+          "handleSugarChange",
+          "numValue",
+          "fetchAssessment",
+          "result",
+          "getRiskColor",
+          "getRiskMeterColor",
+          "containerClass"
+        ],
+        "hooks": [
+          "Effect",
+          "Ref",
+          "Callback",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 23,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\AccountSettings.jsx",
+        "lines": 715,
+        "imports": [
+          "../services/api",
+          "react-router-dom",
+          "react",
+          "../utils/darkMode"
+        ],
+        "components": [
+          "AccountSettings"
+        ],
+        "functions": [
+          "AccountSettings",
+          "navigate",
+          "storedUser",
+          "userName",
+          "isDark",
+          "savedMetrics",
+          "handleChangePassword",
+          "handleSaveChanges",
+          "emailRegex",
+          "userData",
+          "handleLogout",
+          "handleCancel",
+          "handleSaveMetrics",
+          "ageNum",
+          "bmiNum",
+          "bloodSugarNum",
+          "durationNum",
+          "metricsData"
+        ],
+        "hooks": [
+          "Effect",
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 22,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\ChatbotWorkspace.jsx",
+        "lines": 171,
+        "imports": [
+          "../components/DashboardHeader",
+          "../components/ChatbotPanel",
+          "../services/api",
+          "react",
+          "react-router-dom"
+        ],
+        "components": [
+          "ChatbotWorkspace"
+        ],
+        "functions": [
+          "ChatbotWorkspace",
+          "navigate",
+          "handleFile",
+          "uploaded",
+          "prediction",
+          "onFileChange",
+          "onDrop",
+          "handleLogout",
+          "riskLevel",
+          "confidence"
+        ],
+        "hooks": [
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\Dashboard.jsx",
+        "lines": 504,
+        "imports": [
+          "react-router-dom",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "Dashboard"
+        ],
+        "functions": [
+          "Dashboard",
+          "navigate",
+          "profileMenuRef",
+          "patientProfile",
+          "userData",
+          "userName",
+          "patientId",
+          "userInitials",
+          "handleClickOutside",
+          "profileContainer",
+          "handleLogout",
+          "handleSearch",
+          "handleChatSend",
+          "handleNavigation"
+        ],
+        "hooks": [
+          "Effect",
+          "Ref",
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 18,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\FootScanAnalysis.jsx",
+        "lines": 495,
+        "imports": [
+          "../components/DashboardHeader",
+          "../services/api",
+          "react",
+          "../components/HealthMetricsForm",
+          "react-router-dom"
+        ],
+        "components": [
+          "FootScanAnalysis"
+        ],
+        "functions": [
+          "FootScanAnalysis",
+          "navigate",
+          "savedMetrics",
+          "handleFileUpload",
+          "reader",
+          "handleDragDrop",
+          "file",
+          "handleBrowseClick",
+          "input",
+          "handleStartAnalysis",
+          "uploadInterval",
+          "uploadResponse",
+          "imageUrl",
+          "patientProfile",
+          "predictionResponse",
+          "handleViewHealthMetrics",
+          "assessment",
+          "handleLogout",
+          "patientProfile",
+          "userName"
+        ],
+        "hooks": [
+          "Effect",
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 16,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\ForgotPassword.jsx",
+        "lines": 127,
+        "imports": [
+          "react-router-dom",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "ForgotPassword"
+        ],
+        "functions": [
+          "ForgotPassword",
+          "navigate",
+          "handleSubmit",
+          "response",
+          "handleCopyLink"
+        ],
+        "hooks": [
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 1,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\HealthMetricsResults.jsx",
+        "lines": 221,
+        "imports": [
+          "react-router-dom",
+          "../components/DashboardHeader"
+        ],
+        "components": [
+          "HealthMetricsResults"
+        ],
+        "functions": [
+          "HealthMetricsResults",
+          "navigate",
+          "location",
+          "assessment",
+          "healthMetrics",
+          "previewImage",
+          "getRiskColor",
+          "getRiskMeterColor",
+          "riskColor"
+        ],
+        "hooks": [
+          "Navigate",
+          "Location"
+        ],
+        "api_calls": [],
+        "comments": 14,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\History.jsx",
+        "lines": 545,
+        "imports": [
+          "react-router-dom",
+          "react",
+          "../utils/darkMode"
+        ],
+        "components": [
+          "History"
+        ],
+        "functions": [
+          "sampleHistory",
+          "History",
+          "navigate",
+          "savedDarkMode",
+          "handleDarkModeToggle",
+          "newMode",
+          "handleLogout",
+          "filteredHistory",
+          "matchesRisk",
+          "matchesSearch",
+          "getRiskColor",
+          "getSeverityColor"
+        ],
+        "hooks": [
+          "Effect",
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 33,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\Login.jsx",
+        "lines": 175,
+        "imports": [
+          "react-router-dom",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "Login"
+        ],
+        "functions": [
+          "Login",
+          "navigate",
+          "handleSubmit",
+          "data"
+        ],
+        "hooks": [
+          "Navigate",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 1,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\ResetPassword.jsx",
+        "lines": 125,
+        "imports": [
+          "react-router-dom",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "ResetPassword"
+        ],
+        "functions": [
+          "ResetPassword",
+          "navigate",
+          "token",
+          "handleSubmit",
+          "data"
+        ],
+        "hooks": [
+          "Effect",
+          "Navigate",
+          "SearchParams",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\ScanResults.jsx",
+        "lines": 213,
+        "imports": [
+          "react-router-dom",
+          "../components/DashboardHeader",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "ScanResults"
+        ],
+        "functions": [
+          "ScanResults",
+          "navigate",
+          "location",
+          "previewImage",
+          "prediction",
+          "isUlcer",
+          "alertColor",
+          "alertText",
+          "resultTitle"
+        ],
+        "hooks": [
+          "Navigate",
+          "Location",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 14,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\pages\\Signup.jsx",
+        "lines": 335,
+        "imports": [
+          "../components/HealthMetricsForm",
+          "react-router-dom",
+          "react",
+          "../services/api"
+        ],
+        "components": [
+          "Signup"
+        ],
+        "functions": [
+          "getStrength",
+          "Signup",
+          "navigate",
+          "strength",
+          "handleSubmit",
+          "data"
+        ],
+        "hooks": [
+          "Navigate",
+          "Memo",
+          "State"
+        ],
+        "api_calls": [],
+        "comments": 7,
+        "todos": []
+      },
+      {
+        "path": "frontend\\eslint.config.js",
+        "lines": 30,
+        "imports": [
+          "eslint-plugin-react-hooks",
+          "@eslint/js",
+          "eslint-plugin-react-refresh",
+          "globals",
+          "eslint/config"
+        ],
+        "components": [],
+        "functions": [],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\postcss.config.js",
+        "lines": 7,
+        "imports": [],
+        "components": [],
+        "functions": [],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 0,
+        "todos": []
+      },
+      {
+        "path": "frontend\\tailwind.config.js",
+        "lines": 16,
+        "imports": [],
+        "components": [],
+        "functions": [],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 2,
+        "todos": []
+      },
+      {
+        "path": "frontend\\vite.config.js",
+        "lines": 9,
+        "imports": [
+          "vite",
+          "@vitejs/plugin-react"
+        ],
+        "components": [],
+        "functions": [],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 1,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\services\\api.js",
+        "lines": 111,
+        "imports": [
+          "axios"
+        ],
+        "components": [],
+        "functions": [
+          "api",
+          "token",
+          "login",
+          "register",
+          "uploadImage",
+          "formData",
+          "delay",
+          "predict",
+          "getCurrentUser",
+          "storedUser",
+          "requestPasswordReset",
+          "resetPassword",
+          "logout",
+          "getHealthMetricsAssessment"
+        ],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 9,
+        "todos": []
+      },
+      {
+        "path": "frontend\\src\\utils\\darkMode.js",
+        "lines": 15,
+        "imports": [],
+        "components": [],
+        "functions": [
+          "applyDarkMode",
+          "toggleDarkMode"
+        ],
+        "hooks": [],
+        "api_calls": [],
+        "comments": 3,
+        "todos": []
+      }
+    ],
+    "total_files": 22,
+    "total_lines": 4426,
+    "total_components": 17
+  },
+  "summary": {
+    "total_files": 105,
+    "total_lines": 12223,
+    "backend": {
+      "files": 83,
+      "lines": 7797,
+      "routes": 41,
+      "route_files": 15,
+      "service_files": 9,
+      "model_files": 15
+    },
+    "frontend": {
+      "files": 22,
+      "lines": 4426,
+      "components": 17,
+      "page_files": 11,
+      "component_files": 3
+    }
+  },
+  "recommendations": [
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\api\\routes\\clinical_data.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\api\\routes\\health.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\api\\routes\\predict.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\routes\\patients.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\routes\\patient_progression.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\routes\\predict.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\routes\\upload.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "documentation",
+      "severity": "low",
+      "file": "backend\\app\\routes\\__init__.py",
+      "message": "Consider adding docstrings to route handlers"
+    },
+    {
+      "type": "todo",
+      "severity": "info",
+      "file": "backend\\app\\api\\routes\\reports.py",
+      "count": 4,
+      "todos": [
+        "Implement report generation pipeline",
+        "Query reports from database",
+        "Query report from database",
+        "Implement export functionality"
+      ]
+    },
+    {
+      "type": "todo",
+      "severity": "info",
+      "file": "backend\\app\\api\\routes\\upload_image.py",
+      "count": 1,
+      "todos": [
+        "Implement database query to get list of images"
+      ]
+    },
+    {
+      "type": "code_size",
+      "severity": "medium",
+      "file": "frontend\\src\\pages\\AccountSettings.jsx",
+      "lines": 715,
+      "message": "Consider refactoring large file into smaller modules"
+    },
+    {
+      "type": "code_size",
+      "severity": "medium",
+      "file": "frontend\\src\\pages\\Dashboard.jsx",
+      "lines": 504,
+      "message": "Consider refactoring large file into smaller modules"
+    },
+    {
+      "type": "code_size",
+      "severity": "medium",
+      "file": "frontend\\src\\pages\\History.jsx",
+      "lines": 545,
+      "message": "Consider refactoring large file into smaller modules"
+    },
+    {
+      "type": "general",
+      "severity": "info",
+      "message": "Code structure is well-organized with clear separation of concerns"
+    },
+    {
+      "type": "general",
+      "severity": "info",
+      "message": "Backend uses async/await patterns for better performance"
+    },
+    {
+      "type": "general",
+      "severity": "info",
+      "message": "Frontend follows React best practices with functional components"
+    }
+  ]
+}

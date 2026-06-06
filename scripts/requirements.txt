@@ -1,0 +1,18 @@
+# Demo Scripts Requirements
+# Install with: pip install -r requirements.txt
+
+# Screenshot and video capture
+playwright==1.40.0
+# After install, run: playwright install chromium
+
+# API testing
+requests==2.31.0
+
+# Image processing (for GIF creation)
+Pillow==10.2.0
+
+# Video conversion support (optional)
+# Note: ffmpeg needs to be installed separately for video conversion
+# Windows: choco install ffmpeg
+# Linux: sudo apt-get install ffmpeg
+# Mac: brew install ffmpeg

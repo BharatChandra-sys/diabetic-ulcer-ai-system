@@ -1,458 +1,433 @@
-# 🏥 MedVision AI - Diabetic Ulcer Explainable AI Platform
+# MedVision AI — Diabetic Ulcer Detection System
 
-## 🚀 Quick Start - Servers Running!
+<div align="center">
 
-**Both servers are currently RUNNING:**
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
-- ✅ **Backend API:** http://localhost:8000 (FastAPI + Uvicorn)
-- ✅ **Frontend:** http://localhost:5173 (React + Vite)
-- ✅ **API Docs:** http://localhost:8000/docs
-- ✅ **Health Check:** http://localhost:8000/health
+[![API Endpoints](https://img.shields.io/badge/API-41%20Endpoints-6366f1?style=flat-square&logo=swagger)](http://localhost:8000/docs)
+[![Models](https://img.shields.io/badge/ML%20Models-CNN%20%7C%20Multimodal%20%7C%20Segmentation-f97316?style=flat-square)](backend/app/ml/)
+[![Deployment](https://img.shields.io/badge/Deploy-Render%20%7C%20Fly.io%20%7C%20Docker-0ea5e9?style=flat-square)](render.yaml)
+[![Health](https://img.shields.io/badge/Uptime-Monitored-22c55e?style=flat-square&logo=prometheus)](http://localhost:8000/health)
 
-**Deployment Status:** ✅ **READY TO DEPLOY**
-- Health check endpoints configured for Render/Heroku
-- `render.yaml` Blueprint configuration ready
-- Complete deployment guide in [DEPLOYMENT.md](DEPLOYMENT.md)
-- Application status in [APPLICATION_STATUS.md](APPLICATION_STATUS.md)
+<br/>
 
----
+**An explainable AI clinical decision support system for detecting and monitoring diabetic foot ulcers.**  
+Upload a foot image, enter patient data, get an instant AI-powered risk assessment with visual explanations.
 
-## Overview
-
-This project explores how artificial intelligence can assist clinicians in detecting and monitoring **diabetic foot ulcers**.
-
-The goal is to build an **Explainable AI Clinical Decision Support System** that combines **medical image analysis** and **clinical data** to estimate ulcer risk and provide interpretable insights.
-
-The platform is designed as a **full-stack AI application** consisting of:
-
-* **React frontend** for the clinical dashboard
-* **FastAPI backend** for APIs and data processing
-* **Machine learning pipeline** for prediction and explainability
-
-In addition to predictions, the system generates explanations such as **Grad-CAM heatmaps** and **SHAP feature importance visualizations**.
-
-This project was built to explore modern technologies including **FastAPI, PyTorch, React, Docker, MLflow, and Prometheus monitoring**.
-
-**New Features Added:**
-- ✨ Interactive History page with image gallery
-- ✨ Enhanced health check endpoints (5 endpoints for monitoring)
-- ✨ Chatbot workspace with AI assistant
-- ✨ Modern UI with Tailwind CSS
-- ✨ Complete authentication flow (Login/Signup/Password Reset)
-- ✨ Deployment-ready configuration files
+</div>
 
 ---
 
-# Problem Statement
+## Live Demo — Real Results
 
-Diabetic foot ulcers are one of the most serious complications of diabetes. According to the **International Diabetes Federation**, millions of patients worldwide develop foot ulcers each year, which can lead to infection, hospitalization, and amputation.
+> All screenshots below are from **actual test runs** using real dataset images. No mockups.
 
-Early detection and continuous monitoring are critical.
+### AI Scan Results — 100% Confidence Detection
 
-However, many AI systems behave as **black boxes**, making it difficult for clinicians to trust predictions.
+<img src="scripts/demo_assets/screenshots/real_test/06_results_page.png" alt="AI Scan Results showing ulcer detection with Grad-CAM heatmap" width="100%"/>
 
-This project focuses on **Explainable AI**, providing both predictions and interpretable outputs that help clinicians understand how the model reaches its decisions.
-
----
-
-# Features
-
-## 🎯 Core AI Capabilities
-* ✅ Diabetic ulcer detection from foot images
-* ✅ Integration of clinical data (age, BMI, diabetes duration, etc.)
-* ✅ Explainable AI visualizations
-* ✅ Grad-CAM heatmaps for image explanation
-* ✅ SHAP feature importance for clinical data
-* ✅ Patient timeline tracking and ulcer progression monitoring
-
-## 💻 Application Features
-* ✅ JWT-based authentication system (Login/Signup/Password Reset)
-* ✅ Interactive chatbot workspace with image upload
-* ✅ History page with filters (Risk level, search, grid/list view)
-* ✅ Real-time AI analysis with confidence scores
-* ✅ Modern responsive UI with Tailwind CSS
-* ✅ Cloud image storage (Cloudinary)
-
-## 🚀 DevOps & Deployment
-* ✅ **5 Health check endpoints** (`/health`, `/health/ping`, `/health/ready`, `/health/live`, `/health/status`)
-* ✅ **Render Blueprint** (`render.yaml`) - Auto-deploy backend + frontend + database
-* ✅ **Heroku/Railway ready** (`Procfile`)
-* ✅ **Docker support** (`docker-compose.yml`)
-* ✅ Monitoring with Prometheus and Grafana
-* ✅ ML experiment tracking using MLflow
-* ✅ System metrics monitoring (CPU, memory, disk)
+*Real diabetic foot ulcer image processed through the CNN model. Left: original image. Right: Grad-CAM heatmap highlighting the infected region. The system correctly identified the ulcer with 100% confidence and flagged Very High risk.*
 
 ---
 
-# System Architecture
+### Foot Scan Upload — Real Image Loaded
 
-The system follows a **modular full-stack architecture**.
+<img src="scripts/demo_assets/screenshots/real_test/04_real_image_preview.png" alt="Foot scan upload page with real ulcer image loaded" width="100%"/>
 
-**Frontend (React)** provides the clinical dashboard interface.
+*Drag-and-drop upload interface. The real `diabetic-foot-ulcer.jpg` dataset image is loaded and ready for analysis.*
 
-**Backend (FastAPI)** exposes REST APIs for:
+---
 
-* prediction
-* authentication
-* patient data management
-* model inference
+### Health Metrics & Analysis Form
 
-The **machine learning pipeline** performs:
+<img src="scripts/demo_assets/screenshots/real_test/05_metrics_filled.png" alt="Health metrics form with patient data filled in" width="100%"/>
 
-* image preprocessing
-* prediction
-* explainability analysis
+*Patient clinical data (Age 68, BMI 32, Blood Sugar 145) combined with the uploaded image feeds the multimodal AI model.*
 
-High-level architecture:
+---
 
-```
-Frontend (React)
-        ↓
-FastAPI Backend
-        ↓
-AI Models (PyTorch)
-        ↓
-Database + Cloud Storage
+### Main Dashboard
+
+<img src="scripts/demo_assets/screenshots/real_test/02_dashboard.png" alt="Main application dashboard" width="100%"/>
+
+*Real-time overview of scan history, risk distribution, and patient activity.*
+
+---
+
+### Patient History
+
+<img src="scripts/demo_assets/screenshots/real_test/07_history.png" alt="Patient scan history page" width="100%"/>
+
+*Browse past analyses with risk level filters and full scan records.*
+
+---
+
+### Login & Authentication
+
+<img src="scripts/demo_assets/screenshots/real_test/01_login_filled.png" alt="Login page" width="100%"/>
+
+*JWT-based authentication with registration, forgot password, and token-based session management.*
+
+---
+
+### API Documentation
+
+<img src="scripts/demo_assets/screenshots/real_test/08_api_docs.png" alt="Swagger API documentation" width="100%"/>
+
+*41 endpoints auto-documented via FastAPI's Swagger UI.*
+
+---
+
+## Proven Results — Real Dataset Test
+
+5 real diabetic foot ulcer images from the dataset were tested against the live API:
+
+| Image | Prediction | Confidence | Risk Level | Grad-CAM | Latency |
+|-------|-----------|:----------:|:----------:|:--------:|:-------:|
+| `diabetic-foot-ulcer.jpg` | **ULCER** | **100.0%** | Very High | ✅ | 3668 ms |
+| `diabetic_foot_ulcer.jpg` | **ULCER** | **100.0%** | Very High | ✅ | 2563 ms |
+| `14.jpg` | **ULCER** | **100.0%** | Very High | ✅ | 2362 ms |
+| `DiabeticPicture4.jpg` | **ULCER** | **99.9%** | Very High | ✅ | 2511 ms |
+| `hallux-IPJ-ulcer-post1A.jpg` | **ULCER** | **100.0%** | Very High | ✅ | 2594 ms |
+
+**5/5 correctly classified. Grad-CAM heatmap and overlay generated for every image.**
+
+To reproduce:
+```bash
+python scripts/real_image_test.py
 ```
 
 ---
 
-# Technology Stack
+## What It Does
 
-## Frontend
+Diabetic foot ulcers affect millions of patients yearly and are a leading cause of amputation. Most AI tools behave as black boxes — clinicians can't trust what they can't understand.
 
-* React
-* Vite
-* TailwindCSS
-* Chart.js
+MedVision AI solves this by combining:
 
-## Backend
-
-* FastAPI
-* SQLAlchemy
-* Pydantic
-* JWT Authentication
-* Cloudinary (image storage)
-
-## Machine Learning
-
-* PyTorch
-* CNN for image classification
-* Multimodal model combining image and clinical data
-* Grad-CAM visualization
-* SHAP explainability
-
-## DevOps / MLOps
-
-* Docker
-* Prometheus monitoring
-* Grafana dashboards
-* MLflow experiment tracking
-* DVC dataset versioning
+- **Image analysis** — CNN model detects ulcers from photos
+- **Clinical data fusion** — age, BMI, diabetes duration, infection signs
+- **Explainability** — Grad-CAM heatmaps show *where* the model looked; SHAP/LIME show *why* it decided
+- **Risk scoring** — 0–100% risk score with severity classification
+- **Recommendations** — tailored clinical next steps based on risk level
 
 ---
 
-# Project Structure
+## Features
 
-```
-diabetic-ulcer-ai-system/
+**AI / ML**
+- CNN-based ulcer detection from foot images
+- Multimodal model fusing image + clinical features
+- U-Net segmentation for ulcer area estimation
+- Grad-CAM heatmap visualization
+- SHAP + LIME feature importance explanations
+- Confidence-thresholded predictions (65% minimum)
 
-backend/
-│
-├── app/
-│   ├── auth/
-│   ├── routes/
-│   ├── services/
-│   ├── ml/
-│   ├── explainability/
-│   └── monitoring/
-│
-└── requirements.txt
+**Application**
+- JWT authentication (login / signup / password reset)
+- Drag-and-drop image upload
+- Real-time AI inference with progress indicator
+- Scan results page with original image + AI heatmap side by side
+- Patient history with risk-level filtering
+- PDF report generation
+- AI chatbot workspace
 
-
-frontend/
-│
-└── src/
-    ├── components/
-    ├── pages/
-    ├── services/
-    └── styles/
-
-
-datasets/
-│
-├── images/
-├── segmentation_masks/
-└── clinical_data/
-
-
-deployment/
-│
-├── monitoring/
-├── nginx/
-└── kubernetes/
-
-
-docs/
-```
+**Infrastructure**
+- 41 REST API endpoints
+- 5 health check endpoints for uptime monitoring
+- Prometheus metrics
+- Redis caching (optional)
+- Cloudinary image storage
+- SQLAlchemy with PostgreSQL / SQLite
 
 ---
 
-# Getting Started
+## Tech Stack
 
-## 1. Clone the repository
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19, Vite, Tailwind CSS, React Router v7 |
+| Backend | FastAPI, SQLAlchemy, Pydantic, Uvicorn |
+| ML | PyTorch, ONNX Runtime, OpenCV |
+| Explainability | Grad-CAM, SHAP, LIME |
+| Database | PostgreSQL (Neon) / SQLite |
+| Storage | Cloudinary / local uploads |
+| Auth | JWT (python-jose, bcrypt) |
+| Monitoring | Prometheus, UptimeRobot |
+| Deploy | Render, Fly.io, Docker |
 
-```
-git clone https://github.com/chandu1234678/diabetic-ulcer-ai-system.git
+---
+
+## Quick Start
+
+### 1. Clone
+
+```bash
+git clone https://github.com/BharatChandra-sys/diabetic-ulcer-ai-system.git
 cd diabetic-ulcer-ai-system
 ```
 
----
+### 2. Backend
 
-# Backend Setup
-
-```
+```bash
 cd backend
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # Mac/Linux
 pip install -r requirements.txt
+uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Run the backend server:
+### 3. Frontend
 
-```
-uvicorn app.main:app --reload
-```
-
-Backend will start at:
-
-```
-http://127.0.0.1:8000
-```
-
-API documentation:
-
-```
-http://127.0.0.1:8000/docs
-```
-
----
-
-# Frontend Setup
-
-```
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend will run at:
+### 4. Open
+
+| Service | URL |
+|---------|-----|
+| App | http://localhost:5173 |
+| API | http://localhost:8000 |
+| Docs | http://localhost:8000/docs |
+| Health | http://localhost:8000/health |
+
+---
+
+## Environment Variables
+
+Copy `.env.template` to `backend/.env` and fill in:
+
+```env
+DATABASE_URL=postgresql://user:pass@host/db
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-here
+CLOUDINARY_CLOUD_NAME=your-cloud
+CLOUDINARY_API_KEY=your-key
+CLOUDINARY_API_SECRET=your-secret
+ENVIRONMENT=development
+```
+
+---
+
+## API Endpoints
+
+### Health
+```
+GET  /health          → system status
+GET  /health/ping     → uptime ping
+GET  /health/ready    → readiness probe
+GET  /health/live     → liveness probe
+GET  /health/status   → CPU / memory / disk metrics
+```
+
+### Auth
+```
+POST /auth/register
+POST /auth/login           → returns JWT
+POST /auth/forgot-password
+POST /auth/reset-password
+POST /auth/change-password
+```
+
+### Core
+```
+POST /upload              → upload image, returns URL
+POST /predict             → run AI inference
+GET  /reports/            → user's scan history
+GET  /patients/           → patient list
+POST /patients/           → create patient
+GET  /statistics          → system analytics
+GET  /diagnostics         → system diagnostics
+```
+
+Full interactive docs: **http://localhost:8000/docs**
+
+---
+
+## Project Structure
 
 ```
-http://localhost:5173
+diabetic-ulcer-ai-system/
+├── backend/
+│   ├── app/
+│   │   ├── auth/               JWT auth + password reset
+│   │   ├── routes/             41 API endpoints
+│   │   ├── services/           Business logic
+│   │   ├── ml/                 CNN, multimodal, segmentation models
+│   │   ├── explainability/     Grad-CAM, SHAP, LIME
+│   │   ├── pipelines/          Inference + preprocessing pipelines
+│   │   ├── monitoring/         Prometheus metrics
+│   │   ├── main.py
+│   │   └── config.py
+│   └── requirements.txt
+│
+├── frontend/
+│   └── src/
+│       ├── pages/              11 pages (Login, Dashboard, Scan, Results, History…)
+│       ├── components/         Reusable UI components
+│       └── services/           API client (Axios)
+│
+├── datasets/
+│   └── images/test/            Real diabetic ulcer dataset images
+│
+├── scripts/
+│   ├── real_image_test.py      End-to-end test with real images
+│   ├── capture_demo_screenshots.py
+│   └── demo_assets/screenshots/real_test/   ← screenshots in this README
+│
+├── render.yaml                 Render deployment blueprint
+├── fly.toml                    Fly.io deployment config
+└── docker-compose.yml
 ```
 
 ---
 
-# Example Workflow
+## Deployment
 
-1. User logs into the system
-2. Uploads a foot image and clinical information
-3. Backend processes the data using the AI model
-4. Prediction and explanation are generated
-5. Results are displayed in the dashboard
+### Render (one-click)
 
----
+```bash
+git push origin main
+# Go to dashboard.render.com → New → Blueprint → connect repo
+```
 
-# Explainability
+The `render.yaml` file provisions backend + frontend + PostgreSQL automatically.
 
-This project emphasizes **model interpretability**.
+### Fly.io
 
-Two main explanation methods are used:
+```bash
+fly auth login
+fly launch
+fly deploy
+```
 
-**Grad-CAM**
+### Docker
 
-Highlights important regions of the image used by the model for prediction.
+```bash
+docker-compose up --build
+```
 
-**SHAP**
+### Environment Variables (Render dashboard)
 
-Shows how clinical features influence the prediction output.
+| Key | Value |
+|-----|-------|
+| `DATABASE_URL` | Neon PostgreSQL connection string |
+| `SECRET_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
+| `JWT_SECRET_KEY` | Same command, different value |
+| `ENVIRONMENT` | `production` |
+| `CORS_ORIGINS` | Your frontend Vercel URL |
 
-These techniques help clinicians understand **why the system produced a specific prediction**.
+### Keep Alive (Free Tier)
 
----
-
-# Future Improvements
-
-* Improve model accuracy using larger medical datasets
-* Train segmentation models for ulcer area detection
-* Add longitudinal patient analysis for healing prediction
-* Deploy the system to cloud infrastructure
-* Develop a mobile interface for field clinics
-
----
-
-# Learning Outcomes
-
-This project explores several important concepts in modern AI system development:
-
-* Building production-style APIs using FastAPI
-* Integrating deep learning models with web applications
-* Designing explainable AI systems
-* Using Docker for containerized deployments
-* Monitoring AI services using Prometheus and Grafana
-* Managing ML experiments using MLflow
+Add a free [UptimeRobot](https://uptimerobot.com) monitor pointing to:
+```
+https://your-app.onrender.com/health/ping
+```
+Every 5 minutes — prevents the dyno from sleeping.
 
 ---
 
-# System Architecture Diagrams
+## Architecture
 
-## Overall System Architecture
+```
+┌─────────────────────────────────────────────────────┐
+│                    React Frontend                    │
+│         Login / Dashboard / Scan / History          │
+└────────────────────┬────────────────────────────────┘
+                     │ HTTPS / REST
+┌────────────────────▼────────────────────────────────┐
+│                  FastAPI Backend                     │
+│   Auth │ Upload │ Predict │ Reports │ Patients      │
+└──────┬──────────────────┬──────────────────┬────────┘
+       │                  │                  │
+┌──────▼──────┐  ┌────────▼──────┐  ┌───────▼───────┐
+│  PostgreSQL  │  │  ML Pipeline  │  │  Cloudinary   │
+│  (Neon)      │  │  CNN + Grad-  │  │  Image Store  │
+│              │  │  CAM + SHAP   │  │               │
+└─────────────┘  └───────────────┘  └───────────────┘
+```
+
+---
+
+## System Architecture Diagrams
+
+### Overall Architecture
 
 <img width="4992" height="916" alt="architecture" src="https://github.com/user-attachments/assets/90d6f38f-e2e9-4a13-9440-54bb0631bfbb" />
 
----
-
-## Prediction Pipeline (AI Workflow)
+### Prediction Pipeline
 
 <img width="1063" height="1683" alt="pipeline" src="https://github.com/user-attachments/assets/fd0fcbcc-1502-47b2-b63a-5ff43791e72a" />
 
----
-
-## Ulcer Progression Tracking
+### Ulcer Progression Tracking
 
 <img width="1150" height="1345" alt="progression" src="https://github.com/user-attachments/assets/914ba666-da7d-4772-ae9a-0ee1cd22b298" />
 
----
-
-## Backend API Flow
+### Backend API Flow
 
 <img width="2356" height="1266" alt="api-flow" src="https://github.com/user-attachments/assets/d224691b-b6e5-4296-a2a5-c5fcff5f74e6" />
 
 ---
 
----
+## Codebase Stats
 
-# 🏥 Health Check Endpoints (Production Ready)
-
-The backend includes **5 health check endpoints** to keep your application alive on free-tier hosting:
-
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /health` | Main health check - used by Render, Heroku |
-| `GET /health/ping` | Simple uptime ping - for monitoring services |
-| `GET /health/ready` | Readiness probe - Kubernetes compatible |
-| `GET /health/live` | Liveness probe - container orchestration |
-| `GET /health/status` | System metrics - CPU, memory, disk usage |
-
-**Prevent Sleeping on Render (Free Tier):**
-1. Sign up for free [UptimeRobot](https://uptimerobot.com) account
-2. Add HTTP monitor for: `https://your-app.onrender.com/health/ping`
-3. Set interval to 5-14 minutes
-4. Your app stays awake! 🎉
+| Metric | Value |
+|--------|-------|
+| Python files | 83 |
+| JS / JSX files | 22 |
+| Lines of code | 12,223 |
+| API routes | 41 |
+| React pages | 11 |
+| React components | 17 |
+| Backend services | 9 |
+| ML model files | 15 |
 
 ---
 
-# 🌐 Deployment Guide
+## Explainability
 
-## Deploy to Render (Recommended)
+**Grad-CAM** highlights the image regions the CNN focused on when making its decision. The heatmap is overlaid on the original image so clinicians can see exactly where the model detected abnormalities.
 
-**Step 1: Push to GitHub**
+**SHAP / LIME** quantifies which clinical features (age, BMI, diabetes duration, infection signs) contributed most to the risk score. Each prediction includes a natural language explanation:
+
+> *"The model detected a diabetic foot ulcer with 100.0% confidence. Overall risk assessment: Very High (87%). Key clinical risk factors: advanced age (68), high BMI (32.4), long diabetes duration (14 years), moderate infection signs. The most influential clinical feature was Infection Signs (importance: 0.36)."*
+
+---
+
+## Reproducing the Tests
+
 ```bash
-git add .
-git commit -m "Ready for deployment"
-git push origin main
+# Full end-to-end test with real dataset images
+python scripts/real_image_test.py
+
+# API-only test
+python scripts/e2e_test.py
+
+# Capture all page screenshots
+python scripts/capture_demo_screenshots.py
 ```
 
-**Step 2: Deploy with Blueprint**
-1. Go to [Render Dashboard](https://dashboard.render.com)
-2. Click **New** → **Blueprint**
-3. Connect your GitHub repository
-4. Render auto-deploys using `render.yaml`:
-   - Backend API (Python/FastAPI)
-   - Frontend (Static Site)
-   - PostgreSQL Database
-
-**Step 3: Configure Environment Variables**
-Generate secure keys:
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-Set in Render dashboard:
-- `SECRET_KEY` - Generated secure key
-- `JWT_SECRET_KEY` - Another generated key
-- `ENVIRONMENT` - `production`
-- `CORS_ORIGINS` - Your frontend URL
-
-**Step 4: Set Up Monitoring**
-- Create [UptimeRobot](https://uptimerobot.com) account (free)
-- Monitor `/health/ping` endpoint
-- Prevents app from sleeping!
-
-**📖 Complete Guide:** See [DEPLOYMENT.md](DEPLOYMENT.md) for full instructions including Heroku, Railway, Vercel, Docker.
+All require the backend (`port 8000`) and frontend (`port 5173`) to be running.
 
 ---
 
-# 📊 Current Application Status
+## License
 
-✅ **Backend Server:** Running on port 8000  
-✅ **Frontend Server:** Running on port 5173  
-✅ **Health Endpoints:** Configured and tested  
-✅ **Deployment Files:** render.yaml, Procfile, .env templates  
-✅ **Documentation:** DEPLOYMENT.md, APPLICATION_STATUS.md
-
-**Test Locally:**
-```bash
-# Test health endpoints
-curl http://localhost:8000/health
-curl http://localhost:8000/health/ping
-curl http://localhost:8000/health/status
-
-# Open application
-http://localhost:5173
-```
-
-**API Documentation:**
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-
----
-
-# 📁 New Files Added
-
-**Deployment Configuration:**
-- `render.yaml` - Render Blueprint (backend + frontend + database)
-- `Procfile` - Heroku/Railway deployment
-- `DEPLOYMENT.md` - Complete deployment guide
-- `APPLICATION_STATUS.md` - Current system status
-
-**Environment Templates:**
-- `backend/.env.example` - Backend environment variables template
-- `frontend/.env.example` - Frontend environment variables template
-- `backend/.env` - Local development configuration (created)
-- `frontend/.env` - Frontend API URL configuration (created)
-
-**Enhanced Backend:**
-- `backend/app/routes/health.py` - 5 health check endpoints
-- `backend/requirements.txt` - Added `psutil` for system monitoring
-
-**New Frontend Pages:**
-- `frontend/src/pages/History.jsx` - Interactive history with filters
-
----
-
-# License
-
-This project is intended for **educational and research purposes only**.
+MIT — see [LICENSE](LICENSE). Built for educational and research purposes.
 
 ---
 
 <div align="center">
 
-**🎉 Ready to Deploy! Both servers are running. Follow DEPLOYMENT.md to go live.**
-
-**Built with ❤️ for better healthcare**
+Built with ❤️ for better healthcare
 
 </div>
-
