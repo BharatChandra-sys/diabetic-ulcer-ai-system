@@ -2,18 +2,67 @@ version: "3.9"
 
 services:
 
+  # ── PostgreSQL (local dev) ──────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medvision
+      POSTGRES_USER: medvision_user
+      POSTGRES_PASSWORD: devpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medvision_user -d medvision"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend (same Dockerfile as Render) ────────────────────────────────────
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://medvision_user:devpassword@db:5432/medvision
+      - SECRET_KEY=local-dev-secret-change-in-prod
+      - FIREBASE_PROJECT_ID=
+      - FIREBASE_SERVICE_ACCOUNT_JSON=
+      - FRONTEND_URL=http://localhost:5173
+      - ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
     volumes:
-      - ./backend:/app
+      # Hot-reload backend code without rebuilding
+      - ./backend:/app/backend
+      - ./backend/uploads:/app/backend/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
 
+  # ── Frontend (dev server) ───────────────────────────────────────────────────
   frontend:
-    build: ./frontend
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
     ports:
-      - "3000:3000"
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      # Add your Firebase config here for local dev
+      - VITE_FIREBASE_API_KEY=
+      - VITE_FIREBASE_AUTH_DOMAIN=
+      - VITE_FIREBASE_PROJECT_ID=
+      - VITE_FIREBASE_APP_ID=
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
+
+volumes:
+  pgdata:

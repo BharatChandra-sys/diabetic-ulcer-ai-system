@@ -1,43 +1,31 @@
 databases:
-  # ── Render PostgreSQL (free tier — 1 GB, 97 day expiry on free plan) ─────────
+  # ── Render PostgreSQL ─────────────────────────────────────────────────────
   - name: medvision-db
     databaseName: medvision
     user: medvision_user
-    plan: free
-    region: oregon
+    plan: free           # Free tier: 256 MB, 90 day expiration. Upgrade to 'starter' ($7/mo) for backups
+    region: oregon       # Choose: oregon, frankfurt, ohio, singapore
 
 services:
-  # ── Backend API ───────────────────────────────────────────────────────────────
+  # ── Backend API (Docker) ──────────────────────────────────────────────────
   - type: web
     name: medvision-ai-backend
-    env: python
+    env: docker                     # ← tells Render to use Dockerfile
     region: oregon
     plan: free
-    runtime: python
-    buildCommand: >
-      pip install --upgrade pip setuptools wheel &&
-      pip install -r backend/requirements.txt
-    startCommand: >
-      uvicorn backend.app.main:app
-      --host 0.0.0.0
-      --port $PORT
-      --workers 1
-      --log-level info
+    dockerfilePath: ./Dockerfile    # relative to repo root
     healthCheckPath: /health
     autoDeploy: true
 
     envVars:
-      # ── App ────────────────────────────────────────────────────────────────
+      # ── App ──────────────────────────────────────────────────────────────
       - key: ENVIRONMENT
         value: production
 
       - key: DEBUG
         value: "False"
 
-      # ── Database — linked to the Render Postgres above ─────────────────────
-      # Render auto-injects DATABASE_URL when you link the database in the
-      # dashboard (Environment → Add from Database).
-      # If you use the blueprint, it resolves automatically via fromDatabase.
+      # ── Database — auto-linked from the Render Postgres above ─────────────
       - key: DATABASE_URL
         fromDatabase:
           name: medvision-db
@@ -54,22 +42,21 @@ services:
         value: "30"
 
       # ── Firebase Admin SDK ────────────────────────────────────────────────
-      # Paste the entire service account JSON as a single-line string.
-      # Get it from: Firebase console → Project Settings → Service Accounts
-      #              → Generate new private key
+      # Paste your Firebase project ID
       - key: FIREBASE_PROJECT_ID
         value: your-firebase-project-id        # ← replace
 
+      # Paste the ENTIRE service-account JSON as a single-line string.
+      # Firebase console → Project Settings → Service Accounts → Generate key
       - key: FIREBASE_SERVICE_ACCOUNT_JSON
-        value: ""                              # ← paste JSON string here
+        value: ""                              # ← paste JSON here
 
       # ── CORS / Frontend ───────────────────────────────────────────────────
-      # Replace with your actual Vercel URL after first deploy
       - key: FRONTEND_URL
-        value: https://your-app.vercel.app     # ← replace
+        value: https://your-app.vercel.app     # ← replace after Vercel deploy
 
       - key: ALLOWED_ORIGINS
-        value: https://your-app.vercel.app,http://localhost:5173,http://localhost:3000
+        value: https://your-app.vercel.app,http://localhost:5173
 
       # ── ML Model Paths ────────────────────────────────────────────────────
       - key: CNN_MODEL_PATH
@@ -81,7 +68,7 @@ services:
       - key: MULTIMODAL_MODEL_PATH
         value: backend/models/multimodal_model.pth
 
-      # ── Cloudinary (optional — for persistent image storage) ─────────────
+      # ── Cloudinary (optional) ─────────────────────────────────────────────
       - key: CLOUDINARY_CLOUD_NAME
         value: ""
 

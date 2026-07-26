@@ -1,4 +1,4 @@
-# MedVision AI — Diabetic Ulcer Detection System
+# DFU-AI — Diabetic Ulcer Detection System
 
 <div align="center">
 
@@ -293,16 +293,44 @@ diabetic-ulcer-ai-system/
 
 ## Deployment
 
-### Render (one-click)
+### 🚀 Render + PostgreSQL (Recommended)
 
+**Complete step-by-step guide:** [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
+
+**Quick Deploy:**
+
+1. **Push to GitHub:**
 ```bash
 git push origin main
-# Go to dashboard.render.com → New → Blueprint → connect repo
 ```
 
-The `render.yaml` file provisions backend + frontend + PostgreSQL automatically.
+2. **Deploy on Render:**
+- Go to [dashboard.render.com](https://dashboard.render.com)
+- Click **"New +"** → **"Blueprint"**
+- Connect your repo
+- Click **"Apply"**
 
-### Fly.io
+The `render.yaml` automatically provisions:
+- ✅ FastAPI backend (Docker)
+- ✅ PostgreSQL database (256 MB free tier)
+- ✅ Auto-linked DATABASE_URL
+- ✅ Health checks + monitoring
+
+3. **Configure Firebase:**
+- Add `FIREBASE_PROJECT_ID` in Render dashboard
+- Add `FIREBASE_SERVICE_ACCOUNT_JSON` (single-line JSON)
+- Update `FRONTEND_URL` with your Vercel URL
+
+4. **Keep Alive (free tier):**
+- Set up [UptimeRobot](https://uptimerobot.com) monitor
+- Point to: `https://your-backend.onrender.com/health/ping`
+- Interval: 5 minutes
+
+**See full guide for:** Firebase setup, database migrations, troubleshooting, scaling, security best practices.
+
+---
+
+### Fly.io (Alternative)
 
 ```bash
 fly auth login
@@ -310,29 +338,17 @@ fly launch
 fly deploy
 ```
 
-### Docker
+See [DEPLOY_FLYIO.md](DEPLOY_FLYIO.md) for complete guide.
+
+---
+
+### Docker (Local Development)
 
 ```bash
 docker-compose up --build
 ```
 
-### Environment Variables (Render dashboard)
-
-| Key | Value |
-|-----|-------|
-| `DATABASE_URL` | Neon PostgreSQL connection string |
-| `SECRET_KEY` | `python -c "import secrets; print(secrets.token_urlsafe(32))"` |
-| `JWT_SECRET_KEY` | Same command, different value |
-| `ENVIRONMENT` | `production` |
-| `CORS_ORIGINS` | Your frontend Vercel URL |
-
-### Keep Alive (Free Tier)
-
-Add a free [UptimeRobot](https://uptimerobot.com) monitor pointing to:
-```
-https://your-app.onrender.com/health/ping
-```
-Every 5 minutes — prevents the dyno from sleeping.
+Uses the same `Dockerfile` as production for consistency.
 
 ---
 
