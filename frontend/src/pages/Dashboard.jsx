@@ -16,7 +16,6 @@ export default function Dashboard({ onLogout }) {
   const userName = patientProfile.full_name || userData.full_name || 'John Doe'
   const patientId = patientProfile.patient_id || userData.patient_id || userData.id || 'PT-2024-001'
   const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase()
-
   // Close profile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {

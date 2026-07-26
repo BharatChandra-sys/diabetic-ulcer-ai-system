@@ -42,3 +42,6 @@ typing-extensions>=4.8.0
 argon2-cffi>=23.1.0  # required for argon2 password hashing
 
 psycopg2-binary==2.9.9
+
+# Firebase Admin SDK — token verification
+firebase-admin==6.5.0
