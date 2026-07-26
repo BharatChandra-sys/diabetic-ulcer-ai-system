@@ -1,0 +1,37 @@
+# fly.toml — Fly.io deployment configuration
+app = "medvision-ai"
+primary_region = "sjc"  # San Jose, California (change to your preferred region)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  ENVIRONMENT = "production"
+  DEBUG = "False"
+  JWT_ALGORITHM = "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES = "30"
+  CNN_MODEL_PATH = "backend/models/best_dfu_model.pth"
+  SEGMENTATION_MODEL_PATH = "backend/models/segmentation_model.pth"
+  MULTIMODAL_MODEL_PATH = "backend/models/multimodal_model.pth"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = false  # Keep running (free tier allows this)
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Fly.io Postgres connection will be injected as DATABASE_URL
+# No need to specify here - it's automatic
