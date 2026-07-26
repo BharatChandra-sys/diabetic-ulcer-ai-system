@@ -1,52 +1,33 @@
-# ── Large ML/data folders not needed on server ───────────────────────────────
+# Exclude from Render deployment
+
+# Datasets (large files)
 datasets/
 notebooks/
-logs/
-mlops/
-mlruns/
-experiments/
 scripts/demo_assets/
-scripts/*.jpg
-scripts/*.png
-scripts/*.webm
 
-# ── Frontend (deployed to Vercel separately) ──────────────────────────────────
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-frontend/.env
-frontend/.env.*
+# Frontend (deploy separately on Vercel)
+frontend/
 
-# ── Dev tooling ───────────────────────────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
-
-# ── Git ───────────────────────────────────────────────────────────────────────
+# Development files
 .git/
+.github/
+.vscode/
+*.md
+!README.md
 
-# ── Env files (use Render dashboard for secrets) ─────────────────────────────
+# Local environment
 .env
 .env.*
-backend/.env
-backend/firebase-service-account.json
-
-# ── Python cache ─────────────────────────────────────────────────────────────
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# ── Virtual envs ─────────────────────────────────────────────────────────────
 venv/
-env/
-.venv/
-backend/venv/
+__pycache__/
 
-# ── OS junk ──────────────────────────────────────────────────────────────────
-.DS_Store
-Thumbs.db
+# Firebase credentials (set via Render dashboard)
+*firebase*.json
+FIREBASE_RENDER_CONFIG.txt
 
-# ── User uploads (regenerated at runtime) ────────────────────────────────────
-backend/uploads/*
-!backend/uploads/.gitkeep
+# Test files
+tests/
+*.test.py
+
+# Documentation (not needed in production)
+docs/
