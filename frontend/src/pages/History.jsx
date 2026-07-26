@@ -1,544 +1,316 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { applyDarkMode, toggleDarkMode } from '../utils/darkMode'
+import DashboardHeader from '../components/DashboardHeader'
+import { logout } from '../services/api'
 
-// Sample history data - replace with API call to backend
-const sampleHistory = [
-  {
-    id: 1,
-    patientId: 'PT-2024-001',
-    timestamp: '2024-03-05 14:23',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+1',
-    heatmapImage: 'https://via.placeholder.com/300x300/ff6b6b/fff?text=Heatmap+1',
-    prediction: 'Diabetic Foot Ulcer Detected',
-    confidence: 94.2,
-    riskLevel: 'High Risk',
-    aiSuggestion: 'Immediate intervention recommended. Grade 3 ulcer detected with signs of infection. Recommend wound care specialist consultation within 24 hours.',
-    severity: 'Critical',
-    location: 'Left Plantar',
-  },
-  {
-    id: 2,
-    patientId: 'PT-2024-002',
-    timestamp: '2024-03-05 11:15',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+2',
-    heatmapImage: 'https://via.placeholder.com/300x300/ffd93d/fff?text=Heatmap+2',
-    prediction: 'Early Stage Ulceration',
-    confidence: 87.5,
-    riskLevel: 'Moderate Risk',
-    aiSuggestion: 'Monitor closely. Early signs of tissue breakdown detected. Recommend offloading pressure and improved glycemic control.',
-    severity: 'Moderate',
-    location: 'Right Heel',
-  },
-  {
-    id: 3,
-    patientId: 'PT-2024-003',
-    timestamp: '2024-03-04 16:47',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+3',
-    heatmapImage: 'https://via.placeholder.com/300x300/6bcf7f/fff?text=Heatmap+3',
-    prediction: 'No Abnormalities Detected',
-    confidence: 96.8,
-    riskLevel: 'Low Risk',
-    aiSuggestion: 'Healthy tissue detected. Continue regular monitoring and preventive care. No immediate intervention required.',
-    severity: 'Normal',
-    location: 'Bilateral Feet',
-  },
-  {
-    id: 4,
-    patientId: 'PT-2024-004',
-    timestamp: '2024-03-04 09:32',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+4',
-    heatmapImage: 'https://via.placeholder.com/300x300/ff9999/fff?text=Heatmap+4',
-    prediction: 'Chronic Wound with Infection',
-    confidence: 91.3,
-    riskLevel: 'High Risk',
-    aiSuggestion: 'Active infection markers detected. Bacterial culture recommended. Consider antibiotic therapy and aggressive wound management.',
-    severity: 'Critical',
-    location: 'Left Toe',
-  },
-  {
-    id: 5,
-    patientId: 'PT-2024-005',
-    timestamp: '2024-03-03 13:58',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+5',
-    heatmapImage: 'https://via.placeholder.com/300x300/ffb84d/fff?text=Heatmap+5',
-    prediction: 'Pre-Ulcerative Changes',
-    confidence: 83.7,
-    riskLevel: 'Moderate Risk',
-    aiSuggestion: 'Tissue changes indicate increased risk. Implement preventive measures including specialized footwear and regular inspection.',
-    severity: 'Moderate',
-    location: 'Right Ball',
-  },
-  {
-    id: 6,
-    patientId: 'PT-2024-006',
-    timestamp: '2024-03-02 10:21',
-    originalImage: 'https://via.placeholder.com/300x300/e0e0e0/666?text=Scan+6',
-    heatmapImage: 'https://via.placeholder.com/300x300/6bcf7f/fff?text=Heatmap+6',
-    prediction: 'Healthy Tissue',
-    confidence: 98.1,
-    riskLevel: 'Low Risk',
-    aiSuggestion: 'No pathological findings. Maintain current preventive care routine.',
-    severity: 'Normal',
-    location: 'Both Feet',
-  },
+const SAMPLE = [
+  { id:1, ts:'2024-03-05 14:23', prediction:'Diabetic Foot Ulcer Detected', confidence:94.2, riskLevel:'High Risk',   severity:'Critical', location:'Left Plantar', suggestion:'Immediate wound care specialist consultation within 24 hours. Grade 3 ulcer with signs of infection.' },
+  { id:2, ts:'2024-03-05 11:15', prediction:'Early Stage Ulceration',        confidence:87.5, riskLevel:'Moderate Risk',severity:'Moderate', location:'Right Heel',   suggestion:'Monitor closely. Early tissue breakdown. Recommend offloading and glycemic control.' },
+  { id:3, ts:'2024-03-04 16:47', prediction:'No Abnormalities Detected',     confidence:96.8, riskLevel:'Low Risk',    severity:'Normal',   location:'Bilateral Feet',suggestion:'Healthy tissue. Continue routine preventive care.' },
+  { id:4, ts:'2024-03-04 09:32', prediction:'Chronic Wound with Infection',  confidence:91.3, riskLevel:'High Risk',   severity:'Critical', location:'Left Toe',     suggestion:'Active infection detected. Bacterial culture recommended. Consider antibiotic therapy.' },
+  { id:5, ts:'2024-03-03 13:58', prediction:'Pre-Ulcerative Changes',        confidence:83.7, riskLevel:'Moderate Risk',severity:'Moderate', location:'Right Ball',   suggestion:'Implement specialised footwear and regular inspection.' },
+  { id:6, ts:'2024-03-02 10:21', prediction:'Healthy Tissue',                confidence:98.1, riskLevel:'Low Risk',    severity:'Normal',   location:'Both Feet',    suggestion:'No pathological findings. Maintain current preventive care routine.' },
 ]
 
+const RISK_CONFIG = {
+  'High Risk':     { bg:'bg-red-100',    text:'text-red-700',    border:'border-red-200',    dot:'bg-red-500' },
+  'Moderate Risk': { bg:'bg-yellow-100', text:'text-yellow-700', border:'border-yellow-200', dot:'bg-yellow-500' },
+  'Low Risk':      { bg:'bg-green-100',  text:'text-green-700',  border:'border-green-200',  dot:'bg-green-500' },
+}
+
+const SEV_COLORS = { Critical:'text-red-600', Moderate:'text-yellow-600', Normal:'text-green-600' }
+
+function RiskBadge({ level }) {
+  const c = RISK_CONFIG[level] || RISK_CONFIG['Low Risk']
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${c.bg} ${c.text} ${c.border}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${c.dot}`} />
+      {level}
+    </span>
+  )
+}
+
 export default function History({ onLogout }) {
-  const navigate = useNavigate()
-  const [selectedEntry, setSelectedEntry] = useState(null)
-  const [filterRisk, setFilterRisk] = useState('all')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [viewMode, setViewMode] = useState('grid') // grid or list
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const navigate   = useNavigate()
+  const [selected, setSelected] = useState(null)
+  const [risk,     setRisk]     = useState('all')
+  const [query,    setQuery]    = useState('')
+  const [view,     setView]     = useState('grid')
 
-  // Apply dark mode on mount - default to light mode
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
-    setIsDarkMode(savedDarkMode)
-    applyDarkMode()
-  }, [])
-
-  const handleDarkModeToggle = () => {
-    const newMode = !isDarkMode
-    setIsDarkMode(newMode)
-    toggleDarkMode(newMode)
-  }
-
-  const handleLogout = () => {
-    if (onLogout) onLogout()
-    navigate('/login', { replace: true })
-  }
-
-  const filteredHistory = sampleHistory.filter((entry) => {
-    const matchesRisk = filterRisk === 'all' || entry.riskLevel === filterRisk
-    const matchesSearch =
-      searchQuery === '' ||
-      entry.patientId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.prediction.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesRisk && matchesSearch
+  const filtered = SAMPLE.filter(e => {
+    const rOk = risk === 'all' || e.riskLevel === risk
+    const qOk = !query || e.prediction.toLowerCase().includes(query.toLowerCase())
+    return rOk && qOk
   })
 
-  const getRiskColor = (risk) => {
-    switch (risk) {
-      case 'High Risk':
-        return 'bg-red-100 text-red-800 border-red-200'
-      case 'Moderate Risk':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'Low Risk':
-        return 'bg-green-100 text-green-800 border-green-200'
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
-    }
-  }
-
-  const getSeverityColor = (severity) => {
-    switch (severity) {
-      case 'Critical':
-        return 'text-red-600'
-      case 'Moderate':
-        return 'text-yellow-600'
-      case 'Normal':
-        return 'text-green-600'
-      default:
-        return 'text-gray-600'
-    }
-  }
+  // Close modal on Escape
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') setSelected(null) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   return (
-    <div className="min-h-screen bg-light dark:bg-slate-950 text-slate-900 dark:text-white font-display">
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3">
-          <button 
-            onClick={() => navigate('/dashboard')} 
-            className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white hover:opacity-80 transition-opacity"
-          >
-            MedVision <span className="text-primary">AI</span>
-          </button>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleDarkModeToggle}
-              className="size-10 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
-              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              <span className="material-symbols-outlined">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
-            </button>
-            <button
-              onClick={() => navigate('/chatbot')}
-              className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            >
-              ← Back to Analysis
-            </button>
-            <button
-              onClick={handleLogout}
-              className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f8fafc]">
+      <DashboardHeader title="Scan History" onLogout={onLogout} />
 
-      <main className="mx-auto w-full max-w-7xl px-4 py-6">
-        {/* Page Title */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-slate-900">Analysis History</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            View all past medical image analyses and AI recommendations
+      <main className="mx-auto max-w-7xl px-4 lg:px-8 py-6 pb-28 lg:pb-10">
+
+        {/* Page heading */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold text-slate-900">Analysis History</h1>
+            <p className="text-sm text-slate-500 mt-1">All past AI scan results and recommendations</p>
+          </div>
+          <button
+            onClick={() => navigate('/foot-scan-analysis')}
+            className="flex items-center gap-2 rounded-xl bg-[#308ce8] px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-[#308ce8]/25 transition-all hover:-translate-y-px active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">add_circle</span>
+            New Scan
+          </button>
+        </div>
+
+        {/* Filters */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 mb-6 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            {/* Risk filter chips */}
+            <div className="flex flex-wrap gap-2">
+              {['all','High Risk','Moderate Risk','Low Risk'].map(r => (
+                <button
+                  key={r}
+                  onClick={() => setRisk(r)}
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
+                    risk === r
+                      ? r === 'High Risk'     ? 'bg-red-600 text-white shadow-sm'
+                      : r === 'Moderate Risk' ? 'bg-yellow-500 text-white shadow-sm'
+                      : r === 'Low Risk'      ? 'bg-green-600 text-white shadow-sm'
+                      : 'bg-[#308ce8] text-white shadow-sm'
+                      : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  {r === 'all' ? 'All Results' : r}
+                </button>
+              ))}
+            </div>
+
+            {/* Search + view toggle */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1 md:w-56">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400">search</span>
+                <input
+                  type="text"
+                  placeholder="Search diagnosis..."
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#308ce8] focus:ring-2 focus:ring-[#308ce8]/20 focus:bg-white"
+                />
+              </div>
+              <div className="flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+                {['grid','list'].map(v => (
+                  <button
+                    key={v}
+                    onClick={() => setView(v)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
+                      view === v ? 'bg-white text-[#308ce8] shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">{v === 'grid' ? 'grid_view' : 'view_list'}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Result count */}
+          <p className="mt-3 text-xs text-slate-500 border-t border-slate-100 pt-3">
+            Showing <span className="font-bold text-slate-700">{filtered.length}</span> of{' '}
+            <span className="font-bold text-slate-700">{SAMPLE.length}</span> results
           </p>
         </div>
 
-        {/* Filters and Search */}
-        <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-sm font-semibold text-slate-700">Filter by Risk:</span>
-            <button
-              onClick={() => setFilterRisk('all')}
-              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
-                filterRisk === 'all'
-                  ? 'bg-primary text-white'
-                  : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setFilterRisk('High Risk')}
-              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
-                filterRisk === 'High Risk'
-                  ? 'bg-red-600 text-white'
-                  : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              High Risk
-            </button>
-            <button
-              onClick={() => setFilterRisk('Moderate Risk')}
-              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
-                filterRisk === 'Moderate Risk'
-                  ? 'bg-yellow-600 text-white'
-                  : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              Moderate Risk
-            </button>
-            <button
-              onClick={() => setFilterRisk('Low Risk')}
-              className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
-                filterRisk === 'Low Risk'
-                  ? 'bg-green-600 text-white'
-                  : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              Low Risk
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="Search patient ID or diagnosis..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 sm:w-64"
-            />
-            <div className="flex gap-1 rounded-lg border border-slate-300 p-1">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`rounded px-2 py-1 text-sm ${
-                  viewMode === 'grid' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                Grid
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`rounded px-2 py-1 text-sm ${
-                  viewMode === 'list' ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'
-                }`}
-              >
-                List
-              </button>
+        {/* Results */}
+        {filtered.length === 0 ? (
+          <div className="flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed border-slate-200 bg-white p-16 text-center">
+            <span className="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+            <div>
+              <p className="font-bold text-slate-700">No results found</p>
+              <p className="text-sm text-slate-500 mt-1">Adjust your filters or search term</p>
             </div>
+            <button onClick={() => { setRisk('all'); setQuery('') }}
+              className="text-sm font-bold text-[#308ce8] hover:underline">Clear filters</button>
           </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-4 text-sm text-slate-600">
-          Showing <span className="font-semibold">{filteredHistory.length}</span> of{' '}
-          <span className="font-semibold">{sampleHistory.length}</span> analyses
-        </div>
-
-        {/* History Grid/List */}
-        {viewMode === 'grid' ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredHistory.map((entry) => (
-              <div
-                key={entry.id}
-                onClick={() => setSelectedEntry(entry)}
-                className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg hover:shadow-primary/10"
+        ) : view === 'grid' ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map(e => (
+              <button
+                key={e.id}
+                onClick={() => setSelected(e)}
+                className="group text-left rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg hover:border-[#308ce8]/20 transition-all hover:-translate-y-0.5"
               >
-                {/* Images */}
-                <div className="grid grid-cols-2 gap-0.5 bg-slate-100">
-                  <div className="relative aspect-square overflow-hidden">
-                    <img
-                      src={entry.originalImage}
-                      alt="Original scan"
-                      className="h-full w-full object-cover transition group-hover:scale-105"
-                    />
-                    <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs font-semibold text-white">
-                      Original
-                    </div>
-                  </div>
-                  <div className="relative aspect-square overflow-hidden">
-                    <img
-                      src={entry.heatmapImage}
-                      alt="AI Heatmap"
-                      className="h-full w-full object-cover transition group-hover:scale-105"
-                    />
-                    <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs font-semibold text-white">
-                      Heatmap
-                    </div>
+                {/* Image placeholder with severity indicator */}
+                <div className={`h-2 w-full ${
+                  e.severity === 'Critical' ? 'bg-red-500' :
+                  e.severity === 'Moderate' ? 'bg-yellow-500' : 'bg-green-500'
+                }`} />
+                <div className="relative bg-slate-100 h-32 flex items-center justify-center overflow-hidden">
+                  <span className="material-symbols-outlined text-5xl text-slate-300 group-hover:scale-110 transition-transform">image</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">{e.location}</span>
+                    <span className={`text-xs font-bold ${
+                      e.severity === 'Critical' ? 'text-red-300' :
+                      e.severity === 'Moderate' ? 'text-yellow-300' : 'text-green-300'
+                    }`}>{e.severity}</span>
                   </div>
                 </div>
 
-                {/* Details */}
                 <div className="p-4">
-                  <div className="mb-2 flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-semibold text-primary">{entry.patientId}</p>
-                      <p className="text-xs text-slate-500">{entry.timestamp}</p>
-                    </div>
-                    <span
-                      className={`rounded-full border px-2 py-0.5 text-xs font-bold ${getRiskColor(
-                        entry.riskLevel
-                      )}`}
-                    >
-                      {entry.riskLevel}
-                    </span>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <p className="text-[10px] text-slate-400">{e.ts}</p>
+                    <RiskBadge level={e.riskLevel} />
                   </div>
-
-                  <h3 className={`mb-1 font-bold ${getSeverityColor(entry.severity)}`}>
-                    {entry.prediction}
-                  </h3>
-                  <p className="mb-2 text-xs text-slate-600">Location: {entry.location}</p>
-
-                  <div className="mb-3 rounded-lg bg-slate-50 p-2">
-                    <p className="text-xs text-slate-700 line-clamp-2">{entry.aiSuggestion}</p>
-                  </div>
-
+                  <h3 className={`font-bold text-sm leading-snug mb-2 ${SEV_COLORS[e.severity]}`}>{e.prediction}</h3>
+                  <p className="text-xs text-slate-600 line-clamp-2 mb-3">{e.suggestion}</p>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-slate-500">Confidence</p>
-                      <p className="text-lg font-bold text-slate-900">{entry.confidence}%</p>
+                      <p className="text-[10px] text-slate-400">Confidence</p>
+                      <p className="text-lg font-extrabold text-slate-900">{e.confidence}%</p>
                     </div>
-                    <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90">
-                      View Details
-                    </button>
+                    <span className="text-xs font-bold text-[#308ce8] group-hover:underline">View details →</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         ) : (
           <div className="space-y-3">
-            {filteredHistory.map((entry) => (
-              <div
-                key={entry.id}
-                onClick={() => setSelectedEntry(entry)}
-                className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg hover:shadow-primary/10"
+            {filtered.map(e => (
+              <button
+                key={e.id}
+                onClick={() => setSelected(e)}
+                className="group w-full text-left rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg hover:border-[#308ce8]/20 transition-all"
               >
                 <div className="flex gap-4 p-4">
-                  {/* Thumbnail Images */}
-                  <div className="flex gap-2">
-                    <div className="relative h-24 w-24 overflow-hidden rounded-lg">
-                      <img
-                        src={entry.originalImage}
-                        alt="Original"
-                        className="h-full w-full object-cover transition group-hover:scale-105"
-                      />
-                      <div className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs font-semibold text-white">
-                        Original
-                      </div>
-                    </div>
-                    <div className="relative h-24 w-24 overflow-hidden rounded-lg">
-                      <img
-                        src={entry.heatmapImage}
-                        alt="Heatmap"
-                        className="h-full w-full object-cover transition group-hover:scale-105"
-                      />
-                      <div className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-xs font-semibold text-white">
-                        Heatmap
-                      </div>
-                    </div>
+                  <div className="relative h-20 w-20 flex-shrink-0 rounded-xl bg-slate-100 overflow-hidden">
+                    <span className="material-symbols-outlined text-3xl text-slate-300 absolute inset-0 flex items-center justify-center">image</span>
+                    <div className={`absolute bottom-0 inset-x-0 h-1 ${
+                      e.severity === 'Critical' ? 'bg-red-500' :
+                      e.severity === 'Moderate' ? 'bg-yellow-500' : 'bg-green-500'
+                    }`} />
                   </div>
-
-                  {/* Details */}
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <div className="mb-2 flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-semibold text-primary">{entry.patientId}</p>
-                          <p className="text-xs text-slate-500">{entry.timestamp}</p>
-                        </div>
-                        <span
-                          className={`rounded-full border px-3 py-1 text-xs font-bold ${getRiskColor(
-                            entry.riskLevel
-                          )}`}
-                        >
-                          {entry.riskLevel}
-                        </span>
-                      </div>
-                      <h3 className={`mb-1 text-lg font-bold ${getSeverityColor(entry.severity)}`}>
-                        {entry.prediction}
-                      </h3>
-                      <p className="mb-2 text-sm text-slate-600">Location: {entry.location}</p>
-                      <p className="text-sm text-slate-700">{entry.aiSuggestion}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className={`font-bold text-sm ${SEV_COLORS[e.severity]}`}>{e.prediction}</h3>
+                      <RiskBadge level={e.riskLevel} />
                     </div>
+                    <p className="text-xs text-slate-500 mb-1">{e.ts} · {e.location}</p>
+                    <p className="text-xs text-slate-600 line-clamp-1">{e.suggestion}</p>
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-col items-end justify-between">
-                    <div className="text-right">
-                      <p className="text-xs text-slate-500">Confidence</p>
-                      <p className="text-2xl font-bold text-slate-900">{entry.confidence}%</p>
-                    </div>
-                    <button className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white transition hover:bg-primary/90">
-                      View Details
-                    </button>
+                  <div className="flex flex-col items-end justify-between flex-shrink-0">
+                    <p className="text-xl font-extrabold text-slate-900">{e.confidence}%</p>
+                    <span className="text-xs font-bold text-[#308ce8] group-hover:underline">Details →</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
-          </div>
-        )}
-
-        {/* No Results */}
-        {filteredHistory.length === 0 && (
-          <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-lg font-semibold text-slate-700">No analyses found</p>
-            <p className="mt-2 text-sm text-slate-500">
-              Try adjusting your filters or search query
-            </p>
           </div>
         )}
       </main>
 
-      {/* Detail Modal */}
-      {selectedEntry && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-          onClick={() => setSelectedEntry(null)}
-        >
-          <div
-            className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
+      {/* ── Detail modal ── */}
+      {selected && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm"
+          onClick={() => setSelected(null)}>
+          <div className="relative w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl bg-white shadow-2xl"
+            onClick={e => e.stopPropagation()}>
+
+            {/* Handle bar (mobile) */}
+            <div className="sm:hidden flex justify-center pt-3 pb-1">
+              <div className="h-1 w-10 rounded-full bg-slate-200" />
+            </div>
+
+            <div className="sticky top-0 flex items-center justify-between border-b border-slate-100 bg-white px-6 py-4 z-10">
               <div>
-                <h3 className="text-xl font-bold text-slate-900">Analysis Details</h3>
-                <p className="text-sm text-slate-500">
-                  {selectedEntry.patientId} • {selectedEntry.timestamp}
-                </p>
+                <h3 className="font-bold text-slate-900">Analysis Details</h3>
+                <p className="text-xs text-slate-500">{selected.ts}</p>
               </div>
-              <button
-                onClick={() => setSelectedEntry(null)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+              <button onClick={() => setSelected(null)}
+                className="h-9 w-9 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors">
+                <span className="material-symbols-outlined text-slate-500">close</span>
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-6">
-              {/* Images */}
-              <div className="mb-6 grid gap-4 md:grid-cols-2">
-                <div className="overflow-hidden rounded-xl border border-slate-200">
-                  <img
-                    src={selectedEntry.originalImage}
-                    alt="Original scan"
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="border-t border-slate-200 bg-slate-50 p-2 text-center text-sm font-semibold text-slate-700">
-                    Original Scan
+            <div className="p-6 space-y-4">
+              {/* Image placeholders */}
+              <div className="grid grid-cols-2 gap-3">
+                {['Original Scan','AI Heatmap'].map(l => (
+                  <div key={l} className="overflow-hidden rounded-xl border border-slate-200">
+                    <div className="bg-slate-100 h-32 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-4xl text-slate-300">image</span>
+                    </div>
+                    <div className="border-t bg-slate-50 py-2 text-center text-xs font-semibold text-slate-600">{l}</div>
                   </div>
-                </div>
-                <div className="overflow-hidden rounded-xl border border-slate-200">
-                  <img
-                    src={selectedEntry.heatmapImage}
-                    alt="AI Heatmap"
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="border-t border-slate-200 bg-slate-50 p-2 text-center text-sm font-semibold text-slate-700">
-                    AI Attention Heatmap
-                  </div>
-                </div>
+                ))}
               </div>
 
-              {/* Analysis Results */}
-              <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <h4 className="mb-3 font-bold text-slate-900">Analysis Results</h4>
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div>
-                    <p className="text-xs text-slate-500">Diagnosis</p>
-                    <p className={`text-lg font-bold ${getSeverityColor(selectedEntry.severity)}`}>
-                      {selectedEntry.prediction}
-                    </p>
+              {/* Results */}
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 grid grid-cols-2 gap-4">
+                {[
+                  { label:'Diagnosis',   val: selected.prediction, cls: SEV_COLORS[selected.severity] },
+                  { label:'Risk Level',  val: null, badge: true },
+                  { label:'Confidence',  val: `${selected.confidence}%`, cls: 'text-slate-900' },
+                  { label:'Location',    val: selected.location,   cls: 'text-slate-900' },
+                ].map(r => (
+                  <div key={r.label}>
+                    <p className="text-xs text-slate-500 mb-1">{r.label}</p>
+                    {r.badge
+                      ? <RiskBadge level={selected.riskLevel} />
+                      : <p className={`font-bold text-sm ${r.cls}`}>{r.val}</p>
+                    }
                   </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Risk Level</p>
-                    <span
-                      className={`inline-block rounded-full border px-3 py-1 text-sm font-bold ${getRiskColor(
-                        selectedEntry.riskLevel
-                      )}`}
-                    >
-                      {selectedEntry.riskLevel}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Confidence Score</p>
-                    <p className="text-lg font-bold text-slate-900">{selectedEntry.confidence}%</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-500">Location</p>
-                    <p className="text-lg font-bold text-slate-900">{selectedEntry.location}</p>
-                  </div>
-                </div>
+                ))}
               </div>
 
-              {/* AI Recommendation */}
-              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
-                <h4 className="mb-2 font-bold text-slate-900">AI Clinical Recommendation</h4>
-                <p className="text-slate-700">{selectedEntry.aiSuggestion}</p>
+              {/* Recommendation */}
+              <div className="rounded-xl border border-[#308ce8]/20 bg-[#308ce8]/5 p-4">
+                <p className="font-bold text-sm text-slate-900 mb-1.5">AI Recommendation</p>
+                <p className="text-sm text-slate-700 leading-relaxed">{selected.suggestion}</p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="mt-6 flex gap-3">
-                <button className="flex-1 rounded-lg bg-primary px-6 py-3 font-semibold text-white hover:bg-primary/90">
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-[#308ce8] py-3 text-sm font-bold text-white hover:bg-[#308ce8]/90 transition-colors">
+                  <span className="material-symbols-outlined text-[18px]">download</span>
                   Download Report
                 </button>
-                <button className="flex-1 rounded-lg border border-slate-300 px-6 py-3 font-semibold text-slate-700 hover:bg-slate-50">
-                  Share with Specialist
+                <button className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                  <span className="material-symbols-outlined text-[18px]">share</span>
+                  Share
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      {/* Mobile bottom nav */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-sm">
+        <div className="flex items-center justify-around px-2 py-2">
+          {[
+            { icon:'home',    label:'Home',   path:'/dashboard' },
+            { icon:'camera',  label:'Scan',   path:'/foot-scan-analysis' },
+            { icon:'history', label:'History',path:'/history', active:true },
+            { icon:'person',  label:'Profile',path:'/account-settings' },
+          ].map(n => (
+            <button key={n.path} onClick={() => navigate(n.path)}
+              className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-colors ${n.active ? 'text-[#308ce8]' : 'text-slate-500'}`}>
+              <span className="material-symbols-outlined text-[22px]">{n.icon}</span>
+              <span className="text-[10px] font-bold">{n.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   )
 }

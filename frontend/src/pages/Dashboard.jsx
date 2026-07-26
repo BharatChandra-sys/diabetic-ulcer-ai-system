@@ -1,502 +1,413 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { logout } from '../services/api'
 
-export default function Dashboard({ onLogout }) {
-  const navigate = useNavigate()
-  const profileMenuRef = useRef(null)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [chatMessage, setChatMessage] = useState('')
-  const [activeNav, setActiveNav] = useState('dashboard')
-  const [showProfileMenu, setShowProfileMenu] = useState(false)
-  
-  const patientProfile = JSON.parse(localStorage.getItem('patient_profile') || '{}')
-  const userData = JSON.parse(localStorage.getItem('user_data') || '{}')
-  const userName = patientProfile.full_name || userData.full_name || 'John Doe'
-  const patientId = patientProfile.patient_id || userData.patient_id || userData.id || 'PT-2024-001'
-  const userInitials = userName.split(' ').map(n => n[0]).join('').toUpperCase()
-  // Close profile menu when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      const profileContainer = document.querySelector('[data-profile-menu]')
-      if (profileContainer && !profileContainer.contains(event.target)) {
-        setShowProfileMenu(false)
-      }
-    }
-    
-    if (showProfileMenu) {
-      document.addEventListener('click', handleClickOutside)
-      return () => document.removeEventListener('click', handleClickOutside)
-    }
-  }, [showProfileMenu])
+// ── Stat card ─────────────────────────────────────────────────────────────────
+function StatCard({ icon, label, value, badge, badgeColor = 'green', iconBg = 'bg-blue-50 text-[#308ce8]' }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:border-[#308ce8]/20 transition-all cursor-pointer">
+      <div className="flex items-start justify-between mb-3">
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconBg}`}>
+          <span className="material-symbols-outlined text-xl">{icon}</span>
+        </div>
+        {badge && (
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+            badgeColor === 'green' ? 'bg-green-100 text-green-700' :
+            badgeColor === 'red'   ? 'bg-red-100 text-red-700' :
+            badgeColor === 'blue'  ? 'bg-blue-100 text-blue-700' :
+            'bg-slate-100 text-slate-600'
+          }`}>{badge}</span>
+        )}
+      </div>
+      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="mt-1 text-2xl font-extrabold text-slate-900">{value}</p>
+    </div>
+  )
+}
 
-  const handleLogout = () => {
-    setShowProfileMenu(false)
-    if (onLogout) {
-      onLogout()
-    }
+// ── Quick action button ───────────────────────────────────────────────────────
+function QuickAction({ icon, label, sub, color, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col gap-2 rounded-2xl p-4 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-95 ${color}`}
+    >
+      <span className="material-symbols-outlined text-2xl">{icon}</span>
+      <div>
+        <p className="font-bold text-sm">{label}</p>
+        <p className="text-xs opacity-80 mt-0.5">{sub}</p>
+      </div>
+    </button>
+  )
+}
+
+export default function Dashboard({ onLogout }) {
+  const navigate    = useNavigate()
+  const { user, logout: fbLogout } = useAuth()
+  const [showMenu, setShowMenu] = useState(false)
+  const menuRef     = useRef(null)
+
+  // User info — prefer Firebase, fallback localStorage
+  const stored   = JSON.parse(localStorage.getItem('patient_profile') || '{}')
+  const userData = JSON.parse(localStorage.getItem('user_data') || '{}')
+  const displayName = user?.displayName || stored.full_name || userData.full_name || 'there'
+  const firstName   = displayName.split(' ')[0]
+  const photoURL    = user?.photoURL || null
+  const initials    = displayName.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()
+
+  const handleLogout = async () => {
+    setShowMenu(false)
+    if (onLogout) onLogout()
     logout()
+    await fbLogout()
     navigate('/login', { replace: true })
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    console.log('Searching for:', searchQuery)
-  }
-
-  const handleChatSend = (e) => {
-    e.preventDefault()
-    if (chatMessage.trim()) {
-      console.log('Sending message:', chatMessage)
-      setChatMessage('')
+  useEffect(() => {
+    function outside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false)
     }
-  }
-
-  const handleNavigation = (path, navItem) => {
-    setActiveNav(navItem)
-  }
+    if (showMenu) document.addEventListener('mousedown', outside)
+    return () => document.removeEventListener('mousedown', outside)
+  }, [showMenu])
 
   return (
-    <div className="flex min-h-screen bg-light text-slate-900 font-display">
-      {/* Sidebar Navigation */}
-      <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-slate-200 sticky top-0 h-screen">
-        <button 
-          onClick={() => handleNavigation('/dashboard', 'dashboard')} 
-          className="p-6 flex items-center gap-3 hover:opacity-80 transition-opacity"
-        >
-          <div className="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
-            <span className="material-symbols-outlined">health_metrics</span>
-          </div>
-          <h1 className="text-xl font-bold tracking-tight text-primary">MedVision AI</h1>
-        </button>
-        <nav className="flex-1 px-4 space-y-2 mt-4">
-          <button
-            onClick={() => handleNavigation('#', 'dashboard')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-colors ${
-              activeNav === 'dashboard'
-                ? 'bg-primary/10 text-primary'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">dashboard</span>
-            <span>Dashboard</span>
-          </button>
-          <button
-            onClick={() => handleNavigation('#', 'scan')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'scan'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">footprint</span>
-            <span>Foot Scan Analysis</span>
-          </button>
-          <button
-            onClick={() => handleNavigation('#', 'ai')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'ai'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">smart_toy</span>
-            <span>AI Assistant</span>
-          </button>
-          <button
-            onClick={() => handleNavigation('#', 'results')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'results'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">assignment</span>
-            <span>Scan Results</span>
-          </button>
-          <button
-            onClick={() => handleNavigation('#', 'progress')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'progress'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">trending_up</span>
-            <span>Healing Progress</span>
-          </button>
-          <button
-            onClick={() => handleNavigation('#', 'reports')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'reports'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">description</span>
-            <span>Reports</span>
-          </button>
-        </nav>
-        <div className="p-4 border-t border-slate-200">
-          <button
-            onClick={() => handleNavigation('#', 'settings')}
-            className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-colors ${
-              activeNav === 'settings'
-                ? 'bg-primary/10 text-primary font-bold'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <span className="material-symbols-outlined">settings</span>
-            <span>Settings</span>
-          </button>
-        </div>
-      </aside>
+    <div className="min-h-screen bg-[#f8fafc] font-display">
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 bg-light">
-        {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-4 lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-slate-600 hover:text-slate-900"
-            >
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-            <span className="font-bold text-primary">MedScan AI</span>
+      {/* ── Top nav ── */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 lg:px-8">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#308ce8] text-white shadow-md shadow-[#308ce8]/30">
+              <span className="material-symbols-outlined text-lg">health_metrics</span>
+            </div>
+            <span className="hidden sm:block text-lg font-extrabold tracking-tight text-slate-900">MedVision AI</span>
           </div>
-          <div className="flex-1 max-w-xl mx-8 hidden md:block">
-            <form onSubmit={handleSearch} className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">search</span>
-              <input
-                className="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-primary/50 text-sm text-slate-900 placeholder-slate-500"
-                placeholder="Search records, scans or help..."
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="size-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600 transition-colors">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <div className="h-8 w-px bg-slate-200"></div>
-            <div className="relative flex items-center gap-3" ref={profileMenuRef} data-profile-menu>
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-900">{userName}</p>
-                <p className="text-xs text-slate-500">Patient ID: {patientId}</p>
-              </div>
+
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-1 ml-6">
+            {[
+              { icon: 'dashboard',   label: 'Dashboard',  path: '/dashboard', active: true },
+              { icon: 'camera',      label: 'Scan',       path: '/foot-scan-analysis' },
+              { icon: 'smart_toy',   label: 'AI Chat',    path: '/chatbot' },
+              { icon: 'history',     label: 'History',    path: '/history' },
+            ].map(n => (
               <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowProfileMenu(!showProfileMenu)
-                }}
-                className="size-10 rounded-full border-2 border-primary/20 hover:border-primary/50 transition-colors overflow-hidden flex items-center justify-center bg-slate-200"
+                key={n.path}
+                onClick={() => navigate(n.path)}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                  n.active ? 'bg-[#308ce8]/10 text-[#308ce8]' : 'text-slate-600 hover:bg-slate-100'
+                }`}
               >
-                <img
-                  alt="Profile"
-                  className="size-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRklI82cvGbeNsHns1kaONsyMCb5Qen7jb6ASvw326IpTc6Fsh8bwsITxol97CfOG93tfSbIgQqvsIWRmukG23kq-8OQHttVLpeQ_dsUGjp76a2cARalHkmW0ZLJCrm8NTOqSl8qxiLeZylraO4Kjt-0syy7EY86U2jQ1SbTU6fK1I0L_Ke0Q9rrRCi2d-TGkEk6UwUoSfj6Z83MmjpGTq66yFv2oJ8pbmDRAuA_v9uU6yp5tXSpOpvTFXmp_Cnkge0zHHgtdVVJ0"
-                />
+                <span className="material-symbols-outlined text-[18px]">{n.icon}</span>
+                {n.label}
               </button>
-              {showProfileMenu && (
-                <div className="absolute top-full right-0 mt-2 bg-white border border-slate-200 rounded-lg shadow-lg z-50 w-48" onClick={(e) => e.stopPropagation()}>
-                  <button onClick={(e) => { e.stopPropagation(); setShowProfileMenu(false); navigate('/account-settings') }} className="w-full px-4 py-2 text-left text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-sm flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">person</span>
-                    Profile Settings
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); setShowProfileMenu(false); navigate('/account-settings') }} className="w-full px-4 py-2 text-left text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-sm flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">settings</span>
-                    Account
-                  </button>
-                  <button onClick={(e) => { e.stopPropagation(); setShowProfileMenu(false); navigate('/history') }} className="w-full px-4 py-2 text-left text-slate-900 hover:bg-slate-100 transition-colors text-sm flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">history</span>
-                    History
-                  </button>
-                  <div className="border-t border-slate-200"></div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleLogout()
-                    }}
-                    className="w-full px-4 py-2 text-left text-red-600 hover:bg-slate-100 transition-colors text-sm flex items-center gap-2"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">logout</span>
-                    Logout
+            ))}
+          </nav>
+
+          <div className="flex-1" />
+
+          {/* New scan CTA */}
+          <button
+            onClick={() => navigate('/foot-scan-analysis')}
+            className="hidden md:flex items-center gap-1.5 rounded-xl bg-[#308ce8] px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-[#308ce8]/25 transition-all hover:-translate-y-px hover:shadow-[#308ce8]/40 active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">add_circle</span>
+            New Scan
+          </button>
+
+          {/* Profile */}
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setShowMenu(v => !v)}
+              className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-slate-100 transition-colors"
+            >
+              {photoURL
+                ? <img src={photoURL} alt={displayName} className="h-8 w-8 rounded-full object-cover ring-2 ring-[#308ce8]/20" />
+                : <div className="h-8 w-8 rounded-full bg-[#308ce8]/10 text-[#308ce8] flex items-center justify-center text-xs font-bold ring-2 ring-[#308ce8]/20">{initials}</div>
+              }
+              <span className="hidden md:block text-sm font-semibold text-slate-900 max-w-[100px] truncate">{firstName}</span>
+              <span className="material-symbols-outlined text-sm text-slate-500">expand_more</span>
+            </button>
+            {showMenu && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl border border-slate-200 bg-white shadow-xl z-50 overflow-hidden">
+                <div className="px-4 py-3 bg-gradient-to-r from-[#308ce8]/8 to-blue-50 border-b border-slate-100">
+                  <p className="text-sm font-bold text-slate-900 truncate">{displayName}</p>
+                  <p className="text-xs text-slate-500 truncate">{user?.email || ''}</p>
+                </div>
+                <div className="p-2">
+                  {[
+                    { icon: 'person',    label: 'Settings',    path: '/account-settings' },
+                    { icon: 'history',   label: 'History',     path: '/history' },
+                    { icon: 'camera',    label: 'New Scan',    path: '/foot-scan-analysis' },
+                  ].map(i => (
+                    <button key={i.path} onClick={() => { navigate(i.path); setShowMenu(false) }}
+                      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-100 transition-colors">
+                      <span className="material-symbols-outlined text-lg text-slate-500">{i.icon}</span>
+                      {i.label}
+                    </button>
+                  ))}
+                  <div className="my-1 h-px bg-slate-100" />
+                  <button onClick={handleLogout}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                    <span className="material-symbols-outlined text-lg">logout</span>
+                    Sign Out
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Dashboard Content */}
-        <div className="p-6 space-y-6 pb-24 overflow-y-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      {/* ── Main content ── */}
+      <main className="mx-auto max-w-7xl px-4 lg:px-8 py-6 pb-28 lg:pb-10 space-y-8">
+
+        {/* Welcome hero */}
+        <div className="rounded-2xl bg-gradient-to-r from-[#308ce8] to-[#2575c0] p-6 lg:p-8 text-white shadow-xl shadow-[#308ce8]/20 overflow-hidden relative">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute -top-10 -right-10 h-48 w-48 rounded-full bg-white blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-white blur-3xl" />
+          </div>
+          <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome back, {userName.split(' ')[0]}</h2>
-              <p className="text-slate-600">Here is your foot health overview for today.</p>
+              <p className="text-white/80 text-sm font-medium">Good day,</p>
+              <h1 className="text-2xl lg:text-3xl font-extrabold mt-1">{firstName} 👋</h1>
+              <p className="text-white/75 text-sm mt-2 max-w-md">
+                Your foot health platform is ready. Upload a scan to get an instant AI-powered risk assessment.
+              </p>
             </div>
             <button
               onClick={() => navigate('/foot-scan-analysis')}
-              className="bg-gradient-to-r from-primary to-[#2575c0] text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all active:scale-95 w-full md:w-auto justify-center"
+              className="flex items-center gap-2 rounded-2xl bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-sm px-6 py-3.5 font-bold text-white transition-all hover:-translate-y-px active:scale-95 flex-shrink-0"
             >
-              <span className="material-symbols-outlined text-[20px]">add_circle</span>
+              <span className="material-symbols-outlined text-xl">camera_alt</span>
               Start New Scan
             </button>
           </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-6 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer hover:shadow-sm">
-              <p className="text-sm font-medium text-slate-600">Current Ulcer Risk</p>
-              <div className="flex items-baseline justify-between mt-2">
-                <p className="text-2xl font-bold text-green-600">Low</p>
-                <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-1 rounded-full">-5% vs last month</span>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer hover:shadow-sm">
-              <p className="text-sm font-medium text-slate-600">Healing Progress</p>
-              <div className="flex items-baseline justify-between mt-2">
-                <p className="text-2xl font-bold text-slate-900">84%</p>
-                <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">+2% improvement</span>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer hover:shadow-sm">
-              <p className="text-sm font-medium text-slate-600">Active Scans</p>
-              <div className="flex items-baseline justify-between mt-2">
-                <p className="text-2xl font-bold text-slate-900">12</p>
-                <span className="text-xs font-bold text-slate-500 px-2 py-1">Total this month</span>
-              </div>
-            </div>
-            <div className="bg-white p-6 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors cursor-pointer hover:shadow-sm">
-              <p className="text-sm font-medium text-slate-600">Next Review</p>
-              <div className="flex items-baseline justify-between mt-2">
-                <p className="text-xl font-bold text-slate-900">Oct 24, 2023</p>
-                <span className="material-symbols-outlined text-primary">calendar_today</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Layout Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Charts and Scan Info */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Activity Chart */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold text-slate-900">Foot Scans Per Week</h3>
-                  <select className="bg-slate-100 border-none text-xs rounded-lg px-3 py-1 text-slate-700 focus:ring-1 focus:ring-primary cursor-pointer hover:bg-slate-200 transition-colors">
-                    <option>Last 30 Days</option>
-                    <option>Last 6 Months</option>
-                  </select>
-                </div>
-                <div className="h-64 flex items-end justify-between gap-2">
-                  <div className="w-full bg-blue-200 rounded-t-lg relative group h-[40%] hover:bg-blue-300 transition-colors cursor-pointer">
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">4 scans</div>
-                  </div>
-                  <div className="w-full bg-blue-200 rounded-t-lg relative group h-[60%] hover:bg-blue-300 transition-colors cursor-pointer"></div>
-                  <div className="w-full bg-blue-200 rounded-t-lg relative group h-[35%] hover:bg-blue-300 transition-colors cursor-pointer"></div>
-                  <div className="w-full bg-blue-200 rounded-t-lg relative group h-[85%] hover:bg-blue-300 transition-colors cursor-pointer"></div>
-                  <div className="w-full bg-primary rounded-t-lg relative group h-[55%] hover:bg-primary/90 transition-colors cursor-pointer"></div>
-                  <div className="w-full bg-blue-200 rounded-t-lg relative group h-[45%] hover:bg-blue-300 transition-colors cursor-pointer"></div>
-                  <div className="w-full bg-primary rounded-t-lg relative group h-[95%] hover:bg-primary/90 transition-colors cursor-pointer"></div>
-                </div>
-                <div className="flex justify-between mt-4 text-[10px] text-slate-600 font-bold uppercase tracking-wider">
-                  <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                </div>
-              </div>
-
-              {/* Recent Scan */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200">
-                <h3 className="font-bold mb-4 text-slate-900">Recent Scan Analysis</h3>
-                <div className="flex flex-col md:flex-row gap-6 items-center">
-                  <div className="w-full md:w-1/3 aspect-square bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center relative hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
-                    <img
-                      alt="Foot thermal scan"
-                      className="w-full h-full object-cover mix-blend-multiply opacity-80"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuATCuRZGUSJkoMIAESPNV_6mevq-sUIYv8nJAogGVpuCr-krXgtmyL2qD6RatS3651W6cjBwySEpFuGBTkEELNZpcqt9y6i34D2qu8DGUwu-tNDb8r6ISEwgvRI_Ju-cXfbRG6V_Cco0pTIT1TFLO2sNfZPan4MYtNGw4JsNy93PtMxdu0qZdxGfN_PPrYb__lbC8lw9DdEZjRnAW6PNbSR8Ob0vuXJhFbL0disLW1x8d7sT5C1jxr2Fiz4RKMI9jaAKNK85zYthTA"
-                    />
-                    <div className="absolute top-2 right-2 bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Normal</div>
-                  </div>
-                  <div className="flex-1 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="p-3 bg-slate-100 rounded-lg border border-slate-200">
-                        <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">Temperature</p>
-                        <p className="text-lg font-bold text-slate-900">36.5°C</p>
-                      </div>
-                      <div className="p-3 bg-slate-100 rounded-lg border border-slate-200">
-                        <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">Pressure Pt</p>
-                        <p className="text-lg font-bold text-slate-900">Optimal</p>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-slate-900">AI Insights</p>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        The thermal profile shows no signs of inflammation. Pressure distribution is well-balanced. Continue current orthopedic support usage.
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="text-xs font-bold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors">
-                        View Full Report
-                      </button>
-                      <button className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition-colors">
-                        Download DICOM
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Side Cards */}
-            <div className="space-y-6">
-              {/* Risk Distribution Donut */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200">
-                <h3 className="font-bold mb-6 text-slate-900">Risk Distribution</h3>
-                <div className="relative size-48 mx-auto flex items-center justify-center">
-                  <svg className="size-full transform -rotate-90">
-                    <circle className="text-slate-200" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="20"></circle>
-                    <circle className="text-primary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeDasharray="502.65" strokeDashoffset="100.53" strokeWidth="20"></circle>
-                    <circle className="text-green-600" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeDasharray="502.65" strokeDashoffset="400.12" strokeWidth="20"></circle>
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className="text-2xl font-bold text-slate-900">Low</p>
-                    <p className="text-[10px] text-slate-600 font-bold uppercase">Profile</p>
-                  </div>
-                </div>
-                <div className="mt-6 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-full bg-green-600"></div>
-                      <span className="text-slate-700">Healthy Tissue</span>
-                    </div>
-                    <span className="font-bold text-slate-900">82%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-full bg-primary"></div>
-                      <span className="text-slate-700">Monitoring Zone</span>
-                    </div>
-                    <span className="font-bold text-slate-900">15%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="size-2 rounded-full bg-red-600"></div>
-                      <span className="text-slate-700">High Risk Area</span>
-                    </div>
-                    <span className="font-bold text-slate-900">3%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* My Foot Scans Collection */}
-              <div onClick={() => navigate('/history')} className="bg-primary rounded-xl p-6 text-white overflow-hidden relative group hover:shadow-lg hover:shadow-primary/20 transition-all cursor-pointer">
-                <div className="relative z-10">
-                  <h3 className="text-lg font-bold mb-2">My Foot Scans</h3>
-                  <p className="text-white/80 text-sm mb-6">View your complete history of 3D and thermal scans.</p>
-                  <button onClick={(e) => { e.stopPropagation(); navigate('/history') }} className="inline-flex items-center gap-2 bg-white text-primary px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-white/90 transition-colors">
-                    Open Gallery
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                  </button>
-                </div>
-                <div className="absolute -bottom-10 -right-10 size-40 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500"></div>
-                <div className="absolute top-0 right-0 p-4 opacity-20">
-                  <span className="material-symbols-outlined text-6xl">footprint</span>
-                </div>
-              </div>
-
-              {/* AI Assistant Mini */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="size-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                    <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
-                  </div>
-                  <h3 className="font-bold text-slate-900">AI Assistant</h3>
-                </div>
-                <div className="bg-slate-100 p-3 rounded-lg mb-4 border border-slate-200">
-                  <p className="text-xs text-slate-700">
-                    "Your last scan shows significant improvement in blood flow. Would you like me to update your exercise plan?"
-                  </p>
-                </div>
-                <form onSubmit={handleChatSend}>
-                  <input
-                    className="w-full text-xs bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-primary text-slate-900 placeholder-slate-500 transition-all"
-                    placeholder="Ask medical AI..."
-                    type="text"
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                  />
-                </form>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Mobile Bottom Navigation */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex items-center justify-between z-50">
-          <button
-            onClick={() => setActiveNav('dashboard')}
-            className={`flex flex-col items-center gap-1 transition-colors ${
-              activeNav === 'dashboard' ? 'text-primary' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[24px]">home</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider">Home</span>
-          </button>
-          <button
-            onClick={() => setActiveNav('scan')}
-            className={`flex flex-col items-center gap-1 transition-colors ${
-              activeNav === 'scan' ? 'text-primary' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[24px]">footprint</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider">Scans</span>
-          </button>
-          <button
-            onClick={() => setActiveNav('reports')}
-            className={`flex flex-col items-center gap-1 transition-colors ${
-              activeNav === 'reports' ? 'text-primary' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[24px]">bar_chart</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider">Reports</span>
-          </button>
-          <button
-            onClick={() => setActiveNav('profile')}
-            className={`flex flex-col items-center gap-1 transition-colors ${
-              activeNav === 'profile' ? 'text-primary' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[24px]">person</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider">Profile</span>
-          </button>
-        </nav>
+        {/* Stats grid — 2 cols mobile, 4 desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard icon="shield_check" label="Ulcer Risk" value="Low" badge="-5%" badgeColor="green" iconBg="bg-green-50 text-green-600" />
+          <StatCard icon="trending_up" label="Healing Progress" value="84%" badge="+2%" badgeColor="blue" iconBg="bg-blue-50 text-[#308ce8]" />
+          <StatCard icon="camera" label="Scans This Month" value="12" iconBg="bg-purple-50 text-purple-600" />
+          <StatCard icon="calendar_today" label="Next Review" value="Oct 24" badge="Upcoming" badgeColor="slate" iconBg="bg-orange-50 text-orange-600" />
+        </div>
 
-        {/* Global Footer */}
-        <footer className="mt-auto p-6 border-t border-slate-200 bg-white pb-24 lg:pb-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-            <div className="flex items-center gap-6">
-              <p>© 2024 MedVision AI Platform. All rights reserved.</p>
-              <button className="hover:text-slate-900 transition-colors">Privacy Policy</button>
-              <button className="hover:text-slate-900 transition-colors">Terms of Service</button>
+        {/* Quick actions — 2 cols mobile, 4 desktop */}
+        <section>
+          <h2 className="text-lg font-bold text-slate-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <QuickAction
+              icon="camera_alt" label="New Scan" sub="Upload foot image"
+              color="bg-[#308ce8] text-white shadow-lg shadow-[#308ce8]/25"
+              onClick={() => navigate('/foot-scan-analysis')}
+            />
+            <QuickAction
+              icon="smart_toy" label="AI Chat" sub="Ask questions"
+              color="bg-purple-600 text-white shadow-lg shadow-purple-600/25"
+              onClick={() => navigate('/chatbot')}
+            />
+            <QuickAction
+              icon="history" label="History" sub="Past analyses"
+              color="bg-slate-800 text-white shadow-lg shadow-slate-800/25"
+              onClick={() => navigate('/history')}
+            />
+            <QuickAction
+              icon="manage_accounts" label="Settings" sub="Your profile"
+              color="bg-emerald-600 text-white shadow-lg shadow-emerald-600/25"
+              onClick={() => navigate('/account-settings')}
+            />
+          </div>
+        </section>
+
+        {/* Two-column content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* ── Left: Chart + Recent Scan ── */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Scan frequency chart */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="font-bold text-slate-900">Scans This Week</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Daily scan frequency</p>
+                </div>
+                <select className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-[#308ce8]/20 outline-none">
+                  <option>Last 7 days</option>
+                  <option>Last 30 days</option>
+                </select>
+              </div>
+              {/* Bar chart */}
+              <div className="flex items-end gap-2 h-36">
+                {[40, 60, 35, 85, 55, 45, 95].map((h, i) => (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                    <div
+                      className={`w-full rounded-t-lg transition-all hover:opacity-80 cursor-pointer ${
+                        i === 6 ? 'bg-[#308ce8]' : 'bg-[#308ce8]/25'
+                      }`}
+                      style={{ height: `${h}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => (
+                  <span key={d} className="flex-1 text-center">{d}</span>
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1">
-                <span className="size-2 bg-green-600 rounded-full"></span>
-                System Operational
-              </span>
-              <div className="h-4 w-px bg-slate-200"></div>
-              <span>HIPAA Compliant</span>
+
+            {/* Recent scan card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-slate-900">Most Recent Scan</h3>
+                <button onClick={() => navigate('/history')} className="text-xs font-bold text-[#308ce8] hover:underline flex items-center gap-1">
+                  View all <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+              </div>
+              <div className="flex gap-4">
+                <div className="relative h-24 w-24 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#308ce8]/10 to-transparent" />
+                  <div className="flex h-full items-center justify-center">
+                    <span className="material-symbols-outlined text-3xl text-slate-300">image</span>
+                  </div>
+                  <span className="absolute bottom-1 right-1 rounded-md bg-green-500 px-1.5 py-0.5 text-[10px] font-bold text-white">Normal</span>
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-lg bg-slate-50 p-2 border border-slate-100">
+                      <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wide">Temperature</p>
+                      <p className="text-sm font-bold text-slate-900 mt-0.5">36.5°C</p>
+                    </div>
+                    <div className="rounded-lg bg-slate-50 p-2 border border-slate-100">
+                      <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wide">Pressure</p>
+                      <p className="text-sm font-bold text-slate-900 mt-0.5">Optimal</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    No inflammation detected. Continue current orthopaedic support protocol.
+                  </p>
+                  <button
+                    onClick={() => navigate('/scan-results')}
+                    className="text-xs font-bold text-[#308ce8] border border-[#308ce8]/30 px-3 py-1.5 rounded-lg hover:bg-[#308ce8]/5 transition-colors"
+                  >
+                    View Full Report
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </footer>
+
+          {/* ── Right: Risk donut + AI mini chat ── */}
+          <div className="space-y-6">
+
+            {/* Risk donut */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 className="font-bold text-slate-900 mb-4">Risk Distribution</h3>
+              <div className="relative h-36 w-36 mx-auto">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="#e2e8f0" strokeWidth="14" />
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="#22c55e" strokeWidth="14"
+                    strokeDasharray={`${0.82 * 301.6} ${301.6}`} strokeLinecap="round" />
+                  <circle cx="60" cy="60" r="48" fill="none" stroke="#308ce8" strokeWidth="14"
+                    strokeDasharray={`${0.15 * 301.6} ${301.6}`} strokeDashoffset={`-${0.82 * 301.6}`} strokeLinecap="round" />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-xl font-extrabold text-slate-900">Low</span>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Profile</span>
+                </div>
+              </div>
+              <div className="mt-4 space-y-2">
+                {[
+                  { color: 'bg-green-500',  label: 'Healthy',   val: '82%' },
+                  { color: 'bg-[#308ce8]',  label: 'Monitoring', val: '15%' },
+                  { color: 'bg-red-500',    label: 'High Risk',  val: '3%' },
+                ].map(r => (
+                  <div key={r.label} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className={`h-2 w-2 rounded-full ${r.color}`} />
+                      <span className="text-slate-600">{r.label}</span>
+                    </div>
+                    <span className="font-bold text-slate-900">{r.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* AI mini chat */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#308ce8]/10">
+                  <span className="material-symbols-outlined text-[#308ce8] text-[18px]">smart_toy</span>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-900">AI Assistant</p>
+                  <span className="flex items-center gap-1 text-[10px] text-green-600 font-semibold">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-500" />Online
+                  </span>
+                </div>
+              </div>
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 mb-3">
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  "Your last scan shows significant improvement in blood flow. Would you like me to update your exercise plan?"
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/chatbot')}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#308ce8]/10 text-[#308ce8] py-2.5 text-sm font-bold hover:bg-[#308ce8]/15 transition-colors"
+              >
+                <span className="material-symbols-outlined text-lg">chat</span>
+                Open AI Chat
+              </button>
+            </div>
+
+            {/* Scan gallery shortcut */}
+            <button
+              onClick={() => navigate('/history')}
+              className="w-full rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-left overflow-hidden relative group hover:shadow-xl transition-all hover:-translate-y-0.5"
+            >
+              <div className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-white/5 blur-2xl group-hover:scale-150 transition-transform duration-500" />
+              <span className="material-symbols-outlined text-4xl text-white/20 absolute top-4 right-4">footprint</span>
+              <div className="relative">
+                <p className="text-white font-bold text-sm">My Scan Gallery</p>
+                <p className="text-white/60 text-xs mt-1 mb-4">View all 3D and thermal scan history</p>
+                <span className="inline-flex items-center gap-1.5 rounded-xl bg-white/15 px-4 py-2 text-xs font-bold text-white">
+                  Open Gallery <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </span>
+              </div>
+            </button>
+          </div>
+        </div>
       </main>
 
-
+      {/* ── Mobile bottom nav ── */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-sm">
+        <div className="flex items-center justify-around px-2 py-2 pb-safe">
+          {[
+            { icon: 'home',      label: 'Home',     path: '/dashboard', active: true },
+            { icon: 'camera',    label: 'Scan',     path: '/foot-scan-analysis' },
+            { icon: 'smart_toy', label: 'AI',       path: '/chatbot' },
+            { icon: 'history',   label: 'History',  path: '/history' },
+            { icon: 'person',    label: 'Profile',  path: '/account-settings' },
+          ].map(n => (
+            <button
+              key={n.path}
+              onClick={() => navigate(n.path)}
+              className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-colors ${
+                n.active ? 'text-[#308ce8]' : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: n.active ? "'FILL' 1" : "'FILL' 0" }}>{n.icon}</span>
+              <span className="text-[10px] font-bold">{n.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   )
 }

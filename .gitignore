@@ -101,9 +101,12 @@ temp/
 # Secrets (NEVER commit)
 # -------------------------
 .env
+frontend/.env
+frontend/.env.*
 *.pem
 *.key
 secrets/
+backend/firebase-service-account.json
 
 # -------------------------
 # Uploads (user-generated content)

@@ -1,99 +1,92 @@
+databases:
+  # ── Render PostgreSQL (free tier — 1 GB, 97 day expiry on free plan) ─────────
+  - name: medvision-db
+    databaseName: medvision
+    user: medvision_user
+    plan: free
+    region: oregon
+
 services:
-  # Backend API Service
+  # ── Backend API ───────────────────────────────────────────────────────────────
   - type: web
     name: medvision-ai-backend
     env: python
     region: oregon
-    # Correct build command - install build tools first, then dependencies
-    buildCommand: "pip install --upgrade pip setuptools wheel && pip install -r backend/requirements.txt"
-    # Correct start command - use uvicorn from backend context
-    startCommand: "uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
     plan: free
-    # Health check endpoint
+    runtime: python
+    buildCommand: >
+      pip install --upgrade pip setuptools wheel &&
+      pip install -r backend/requirements.txt
+    startCommand: >
+      uvicorn backend.app.main:app
+      --host 0.0.0.0
+      --port $PORT
+      --workers 1
+      --log-level info
     healthCheckPath: /health
-    # Auto-deploy on push
     autoDeploy: true
-    
-    # Environment Variables
+
     envVars:
-      # Python version - MUST be 3.11.x for ML dependencies compatibility
-      
-    
-      
-      # Environment
+      # ── App ────────────────────────────────────────────────────────────────
       - key: ENVIRONMENT
         value: production
-      
+
       - key: DEBUG
         value: "False"
-      
-      # Security - CHANGE THESE IN PRODUCTION!
+
+      # ── Database — linked to the Render Postgres above ─────────────────────
+      # Render auto-injects DATABASE_URL when you link the database in the
+      # dashboard (Environment → Add from Database).
+      # If you use the blueprint, it resolves automatically via fromDatabase.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: medvision-db
+          property: connectionString
+
+      # ── Security ─────────────────────────────────────────────────────────
       - key: SECRET_KEY
         generateValue: true
-      
-      - key: JWT_SECRET_KEY
-        generateValue: true
-      
+
       - key: JWT_ALGORITHM
         value: HS256
-      
+
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "30"
-      
-      # Database - Using SQLite (no external DB needed for free tier)
-      - key: DATABASE_URL
-        value: sqlite:///./medvision.db
-      
-      # Frontend URL - Update this after deploying frontend to Vercel
+
+      # ── Firebase Admin SDK ────────────────────────────────────────────────
+      # Paste the entire service account JSON as a single-line string.
+      # Get it from: Firebase console → Project Settings → Service Accounts
+      #              → Generate new private key
+      - key: FIREBASE_PROJECT_ID
+        value: your-firebase-project-id        # ← replace
+
+      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+        value: ""                              # ← paste JSON string here
+
+      # ── CORS / Frontend ───────────────────────────────────────────────────
+      # Replace with your actual Vercel URL after first deploy
       - key: FRONTEND_URL
-        value: https://your-frontend-app.vercel.app
-      
-      # CORS - Update with your actual frontend URL
+        value: https://your-app.vercel.app     # ← replace
+
       - key: ALLOWED_ORIGINS
-        value: https://your-frontend-app.vercel.app,http://localhost:3000,http://localhost:5173
-      
-      # Cloudinary (Optional - for cloud image storage)
-      - key: CLOUDINARY_CLOUD_NAME
-        value: ""
-      
-      - key: CLOUDINARY_API_KEY
-        value: ""
-      
-      - key: CLOUDINARY_API_SECRET
-        value: ""
-      
-      # Email (Optional - for password reset)
-      - key: SMTP_SERVER
-        value: smtp.gmail.com
-      
-      - key: SMTP_PORT
-        value: "587"
-      
-      - key: SMTP_USERNAME
-        value: ""
-      
-      - key: SMTP_PASSWORD
-        value: ""
-      
-      - key: SMTP_FROM_EMAIL
-        value: noreply@diabeticulcer.com
-      
-      - key: SMTP_FROM_NAME
-        value: Diabetic Ulcer AI System
-      
-      # ML Model Paths (relative to project root)
+        value: https://your-app.vercel.app,http://localhost:5173,http://localhost:3000
+
+      # ── ML Model Paths ────────────────────────────────────────────────────
       - key: CNN_MODEL_PATH
         value: backend/models/best_dfu_model.pth
-      
+
       - key: SEGMENTATION_MODEL_PATH
         value: backend/models/segmentation_model.pth
-      
+
       - key: MULTIMODAL_MODEL_PATH
         value: backend/models/multimodal_model.pth
 
-# DEPLOYMENT NOTES:
-# 1. After deploying backend, copy the Render URL (e.g., https://medvision-ai-backend.onrender.com)
-# 2. Update FRONTEND_URL and ALLOWED_ORIGINS with your actual Vercel frontend URL
-# 3. For production, generate secure values for SECRET_KEY and JWT_SECRET_KEY
-# 4. ML models will use pretrained weights if .pth files are not found (non-blocking)
-# 5. The backend will start successfully even if models are missing
+      # ── Cloudinary (optional — for persistent image storage) ─────────────
+      - key: CLOUDINARY_CLOUD_NAME
+        value: ""
+
+      - key: CLOUDINARY_API_KEY
+        value: ""
+
+      - key: CLOUDINARY_API_SECRET
+        value: ""

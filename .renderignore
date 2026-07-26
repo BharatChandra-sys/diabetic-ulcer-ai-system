@@ -1,62 +1,52 @@
-# Exclude large folders from Render deployment
+# ── Large ML/data folders not needed on server ───────────────────────────────
 datasets/
 notebooks/
 logs/
 mlops/
 mlruns/
 experiments/
+scripts/demo_assets/
+scripts/*.jpg
+scripts/*.png
+scripts/*.webm
 
-# Frontend (not needed for backend deployment)
+# ── Frontend (deployed to Vercel separately) ──────────────────────────────────
 frontend/node_modules/
 frontend/dist/
 frontend/build/
+frontend/.env
+frontend/.env.*
 
-# Development files
+# ── Dev tooling ───────────────────────────────────────────────────────────────
 .vscode/
 .idea/
-*.md
-!README.md
-!DEPLOYMENT_GUIDE.md
+*.swp
 
-# Test files
-tests/
-__tests__/
-*.test.py
-*.spec.py
-
-# Documentation
-docs/
-
-# Git
+# ── Git ───────────────────────────────────────────────────────────────────────
 .git/
-.gitignore
 
-# Environment (use Render dashboard instead)
+# ── Env files (use Render dashboard for secrets) ─────────────────────────────
 .env
 .env.*
+backend/.env
+backend/firebase-service-account.json
 
-# Python cache
+# ── Python cache ─────────────────────────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Virtual environments
+# ── Virtual envs ─────────────────────────────────────────────────────────────
 venv/
 env/
 .venv/
+backend/venv/
 
-# Temporary files
-*.tmp
-*.temp
-tmp/
-temp/
-
-# OS files
+# ── OS junk ──────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
-desktop.ini
 
-# User uploads (regenerated)
+# ── User uploads (regenerated at runtime) ────────────────────────────────────
 backend/uploads/*
 !backend/uploads/.gitkeep
