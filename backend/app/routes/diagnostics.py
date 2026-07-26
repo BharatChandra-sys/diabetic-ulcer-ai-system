@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from backend.app.database import get_db
 from backend.app.models import User
 from backend.app.config import settings
+from backend.app.migrations import get_migration_status
 from typing import List
 
 router = APIRouter(prefix="/diagnostics", tags=["diagnostics"], include_in_schema=True)
@@ -26,12 +27,16 @@ def health_check(db: Session = Depends(get_db)):
         # Count users
         user_count = db.query(User).count()
         
+        # Get migration status
+        migrations = get_migration_status()
+        
         return {
             "status": "healthy",
             "database": "connected",
             "users_count": user_count,
             "environment": settings.environment,
-            "version": "1.0.0"
+            "version": "1.0.0",
+            "migrations": migrations
         }
     except Exception as e:
         return {

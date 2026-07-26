@@ -11,6 +11,7 @@ from prometheus_client import make_asgi_app
 from backend.app.database import Base, engine, test_connection
 from backend.app.config import settings
 from backend.app.auth.auth_router import router as auth_router
+from backend.app.migrations import run_migrations, get_migration_status
 from backend.app.routes import (
     health, predict, upload, reports, patients,
     patient_progression, statistics, health_metrics, diagnostics,
@@ -36,6 +37,13 @@ async def lifespan(app: FastAPI):
         logger.info("✓ Database tables ready")
     except Exception as e:
         logger.error(f"❌ Failed to create tables: {e}")
+
+    # Run automatic migrations (safe to run multiple times)
+    try:
+        run_migrations()
+    except Exception as e:
+        logger.error(f"❌ Migration error: {e}")
+        logger.warning("⚠  Continuing startup anyway...")
 
     # Verify DB connectivity
     if test_connection():
