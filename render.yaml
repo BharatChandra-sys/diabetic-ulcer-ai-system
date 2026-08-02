@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: dfuai-backend
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+
+      - key: DEBUG
+        value: "False"
+
+      - key: DATABASE_URL
+        sync: false           # ← Paste your Neon connection string here in Render dashboard
+
+      - key: SECRET_KEY
+        generateValue: true   # ← Render auto-generates a secure random value
+
+      - key: JWT_ALGORITHM
+        value: HS256
+
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+
+      - key: FIREBASE_PROJECT_ID
+        value: dfuai-1f1af
+
+      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+        sync: false           # ← Paste your Firebase JSON here in Render dashboard
+
+      - key: FRONTEND_URL
+        sync: false           # ← Paste your Vercel URL here after deploy
+
+      - key: ALLOWED_ORIGINS
+        sync: false           # ← Paste your Vercel URL + localhost here
+
+      - key: CNN_MODEL_PATH
+        value: backend/models/best_dfu_model.pth
+
+      - key: SEGMENTATION_MODEL_PATH
+        value: backend/models/segmentation_model.pth
+
+      - key: MULTIMODAL_MODEL_PATH
+        value: backend/models/multimodal_model.pth

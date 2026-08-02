@@ -1,33 +1,13 @@
-# Exclude from Render deployment
-
-# Datasets (large files)
+frontend/
 datasets/
 notebooks/
-scripts/demo_assets/
-
-# Frontend (deploy separately on Vercel)
-frontend/
-
-# Development files
+scripts/
 .git/
-.github/
-.vscode/
 *.md
 !README.md
-
-# Local environment
 .env
-.env.*
 venv/
 __pycache__/
-
-# Firebase credentials (set via Render dashboard)
-*firebase*.json
-FIREBASE_RENDER_CONFIG.txt
-
-# Test files
-tests/
-*.test.py
-
-# Documentation (not needed in production)
-docs/
+*.pyc
+medvision.db
+*.sqlite3

@@ -11,7 +11,7 @@
 
 [![API Endpoints](https://img.shields.io/badge/API-41%20Endpoints-6366f1?style=flat-square&logo=swagger)](http://localhost:8000/docs)
 [![Models](https://img.shields.io/badge/ML%20Models-CNN%20%7C%20Multimodal%20%7C%20Segmentation-f97316?style=flat-square)](backend/app/ml/)
-[![Deployment](https://img.shields.io/badge/Deploy-Render%20%7C%20Fly.io%20%7C%20Docker-0ea5e9?style=flat-square)](render.yaml)
+[![Deployment](https://img.shields.io/badge/Deploy-Render%20%7C%20Neon%20%7C%20Vercel-0ea5e9?style=flat-square)](DEPLOY.md)
 [![Health](https://img.shields.io/badge/Uptime-Monitored-22c55e?style=flat-square&logo=prometheus)](http://localhost:8000/health)
 
 <br/>
@@ -293,62 +293,31 @@ diabetic-ulcer-ai-system/
 
 ## Deployment
 
-### 🚀 Render + PostgreSQL (Recommended)
+**Full guide: [DEPLOY.md](DEPLOY.md)**
 
-**Complete step-by-step guide:** [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
+Stack: **Render** (backend Docker) + **Neon** (PostgreSQL free) + **Vercel** (frontend)
 
-**Quick Deploy:**
-
-1. **Push to GitHub:**
 ```bash
-git push origin main
+# 1. Get Neon free DB → https://neon.tech
+# 2. Deploy backend → https://dashboard.render.com → New Web Service → connect repo
+# 3. Add 5 env vars in Render (see DEPLOY.md)
+# 4. Deploy frontend → https://vercel.com/new → connect repo
 ```
 
-2. **Deploy on Render:**
-- Go to [dashboard.render.com](https://dashboard.render.com)
-- Click **"New +"** → **"Blueprint"**
-- Connect your repo
-- Click **"Apply"**
-
-The `render.yaml` automatically provisions:
-- ✅ FastAPI backend (Docker)
-- ✅ PostgreSQL database (256 MB free tier)
-- ✅ Auto-linked DATABASE_URL
-- ✅ Health checks + monitoring
-
-3. **Configure Firebase:**
-- Add `FIREBASE_PROJECT_ID` in Render dashboard
-- Add `FIREBASE_SERVICE_ACCOUNT_JSON` (single-line JSON)
-- Update `FRONTEND_URL` with your Vercel URL
-
-4. **Keep Alive (free tier):**
-- Set up [UptimeRobot](https://uptimerobot.com) monitor
-- Point to: `https://your-backend.onrender.com/health/ping`
-- Interval: 5 minutes
-
-**See full guide for:** Firebase setup, database migrations, troubleshooting, scaling, security best practices.
-
----
-
-### Fly.io (Alternative)
+### Local Development
 
 ```bash
-fly auth login
-fly launch
-fly deploy
-```
+# Backend
+python -m venv venv & venv\Scripts\activate
+pip install -r backend/requirements.txt
+uvicorn backend.app.main:app --reload --port 8000
 
-See [DEPLOY_FLYIO.md](DEPLOY_FLYIO.md) for complete guide.
+# Frontend
+cd frontend && npm install && npm run dev
 
----
-
-### Docker (Local Development)
-
-```bash
+# Or Docker
 docker-compose up --build
 ```
-
-Uses the same `Dockerfile` as production for consistency.
 
 ---
 

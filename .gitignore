@@ -111,6 +111,7 @@ backend/firebase-service-account.json
 # Firebase credentials (NEVER commit)
 *firebase*.json
 FIREBASE_RENDER_CONFIG.txt
+FIREBASE_CREDENTIALS.txt
 
 # -------------------------
 # Uploads (user-generated content)
