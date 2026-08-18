@@ -94,8 +94,33 @@ htmlcov/
 # -------------------------
 *.tmp
 *.temp
+*.backup
+*.bak
+*.old
 tmp/
 temp/
+
+# -------------------------
+# Documentation (generated)
+# -------------------------
+*_SUMMARY.md
+*_PLAN.md
+*_STATUS.md
+*_GUIDE.md
+API_DOCUMENTATION.md
+DEPLOYMENT.md
+
+# -------------------------
+# Archives and unnecessary folders
+# -------------------------
+*.zip
+stitch_clinical_risk_monitor/
+
+# -------------------------
+# Frontend build artifacts
+# -------------------------
+.vite/
+frontend1/.vite/
 
 # -------------------------
 # Secrets (NEVER commit)
@@ -103,6 +128,10 @@ temp/
 .env
 frontend/.env
 frontend/.env.*
+frontend1/.env
+frontend1/.env.*
+backend/.env
+backend/.env.*
 *.pem
 *.key
 secrets/
@@ -112,6 +141,7 @@ backend/firebase-service-account.json
 *firebase*.json
 FIREBASE_RENDER_CONFIG.txt
 FIREBASE_CREDENTIALS.txt
+FIREBASE_SERVICE_ACCOUNT_JSON.txt
 
 # -------------------------
 # Uploads (user-generated content)

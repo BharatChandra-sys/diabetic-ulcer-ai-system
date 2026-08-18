@@ -16,6 +16,7 @@ from backend.app.routes import (
     health, predict, upload, reports, patients,
     patient_progression, statistics, health_metrics, diagnostics,
 )
+from backend.app.routes import predictions_history, chat, analyze, secure_auth
 from backend.app import models  # noqa: F401 — ensures tables are registered
 
 logging.basicConfig(
@@ -112,6 +113,7 @@ metrics_app = make_asgi_app()
 app.mount("/metrics", metrics_app)
 
 # ── Routers ───────────────────────────────────────────────────────────────────
+app.include_router(secure_auth.router)  # Secure auth (no Firebase in frontend)
 app.include_router(auth_router)
 app.include_router(health.router)
 app.include_router(predict.router)
@@ -122,6 +124,9 @@ app.include_router(patient_progression.router)
 app.include_router(statistics.router)
 app.include_router(health_metrics.router)
 app.include_router(diagnostics.router)
+app.include_router(predictions_history.router)
+app.include_router(chat.router)
+app.include_router(analyze.router)
 
 
 @app.get("/", tags=["root"])

@@ -16,7 +16,10 @@ services:
         value: "False"
 
       - key: DATABASE_URL
-        sync: false           # ← Paste your Neon connection string here in Render dashboard
+        value: postgresql://neondb_owner:npg_xTSBZ5ej3JDh@ep-nameless-cherry-axj5jyim-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+      - key: FIREBASE_WEB_API_KEY
+        sync: false           # ← Paste your Firebase Web API Key (from Firebase Console → Project Settings → Web API Key)
 
       - key: SECRET_KEY
         generateValue: true   # ← Render auto-generates a secure random value

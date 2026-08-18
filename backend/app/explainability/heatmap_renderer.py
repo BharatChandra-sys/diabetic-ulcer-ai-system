@@ -85,18 +85,27 @@ def render_heatmap_overlay(
         heatmap_colored[:, :, i] = np.where(foot_mask == 0, img_array[:, :, i], channel)
     
     # Blend original image with heatmap overlay only on foot region
+    # Use addWeighted for smooth blending
     overlay = cv2.addWeighted(img_array, 1 - alpha, heatmap_colored, alpha, 0)
+    
+    # Apply sharpening to reduce blur
+    kernel_sharpening = np.array([[-1,-1,-1],
+                                   [-1, 9,-1],
+                                   [-1,-1,-1]])
+    overlay = cv2.filter2D(overlay, -1, kernel_sharpening * 0.3)  # Gentle sharpening
     
     # Further apply the mask to ensure clean separation
     # Replace background with original image
     for c in range(3):
         overlay[:, :, c] = np.where(foot_mask == 0, img_array[:, :, c], overlay[:, :, c])
     
-    # Encode to base64
-    ret, buffer = cv2.imencode('.jpg', overlay)
+    # Encode to base64 with high quality PNG (lossless)
+    # PNG is better for overlays to avoid compression artifacts
+    encode_param = [int(cv2.IMWRITE_PNG_COMPRESSION), 3]  # 0-9, 3 is good balance
+    ret, buffer = cv2.imencode('.png', overlay, encode_param)
     img_base64 = base64.b64encode(buffer).decode('utf-8')
     
-    return f"data:image/jpeg;base64,{img_base64}"
+    return f"data:image/png;base64,{img_base64}"
 
 
 def render_heatmap_with_original(
@@ -137,14 +146,20 @@ def render_heatmap_with_original(
     
     # Create overlay
     overlay = cv2.addWeighted(img_array, 0.6, heatmap_colored, 0.4, 0)
-    ret, buffer = cv2.imencode('.jpg', overlay)
-    overlay_base64 = f"data:image/jpeg;base64,{base64.b64encode(buffer).decode('utf-8')}"
+    
+    # Apply sharpening
+    kernel_sharpening = np.array([[-1,-1,-1], [-1, 9,-1], [-1,-1,-1]])
+    overlay = cv2.filter2D(overlay, -1, kernel_sharpening * 0.3)
+    
+    encode_param = [int(cv2.IMWRITE_PNG_COMPRESSION), 3]
+    ret, buffer = cv2.imencode('.png', overlay, encode_param)
+    overlay_base64 = f"data:image/png;base64,{base64.b64encode(buffer).decode('utf-8')}"
     
     if side_by_side:
         # Create heatmap-only visualization
         heatmap_only = cv2.applyColorMap(heatmap_resized, cv2.COLORMAP_JET)
-        ret, buffer = cv2.imencode('.jpg', heatmap_only)
-        heatmap_base64 = f"data:image/jpeg;base64,{base64.b64encode(buffer).decode('utf-8')}"
+        ret, buffer = cv2.imencode('.png', heatmap_only, encode_param)
+        heatmap_base64 = f"data:image/png;base64,{base64.b64encode(buffer).decode('utf-8')}"
         return overlay_base64, heatmap_base64
     
     return overlay_base64, overlay_base64

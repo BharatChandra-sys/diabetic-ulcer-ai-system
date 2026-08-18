@@ -212,10 +212,15 @@ def run_inference(image_url: str, age: int, bmi: float, diabetes_duration: int, 
             gradcam_heatmap_raw = generate_gradcam_from_tensor(model, input_tensor)
             # Convert numpy array to list for JSON serialization
             gradcam_heatmap_raw = gradcam_heatmap_raw.tolist() if hasattr(gradcam_heatmap_raw, 'tolist') else gradcam_heatmap_raw
+            logger.info(f"Generated GradCAM heatmap: shape {len(gradcam_heatmap_raw)}x{len(gradcam_heatmap_raw[0]) if gradcam_heatmap_raw else 0}")
+            
             # Render heatmap overlay with foot region masking
             gradcam_overlay_base64 = render_heatmap_overlay(image_url, gradcam_heatmap_raw)
+            logger.info(f"Rendered GradCAM overlay: {len(gradcam_overlay_base64)} chars, starts with: {gradcam_overlay_base64[:50]}")
         except Exception as e:
-            logger.error(f"Failed to generate Grad-CAM: {e}")
+            logger.error(f"Failed to generate Grad-CAM: {e}", exc_info=True)
+            gradcam_heatmap_raw = None
+            gradcam_overlay_base64 = None
     
     except Exception as e:
         logger.error(f"Model inference failed: {e}")

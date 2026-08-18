@@ -87,6 +87,16 @@ class Settings(BaseSettings):
         description="Frontend application URL for CORS and redirects"
     )
     
+    # Firebase settings
+    firebase_web_api_key: str = Field(
+        default="",
+        description="Firebase Web API Key for REST API authentication"
+    )
+    firebase_service_account_path: str = Field(
+        default="backend/firebase-service-account.json",
+        description="Path to Firebase service account JSON file"
+    )
+    
     # CORS Origins
     allowed_origins: str = Field(
         default="http://localhost:3000,http://localhost:5173",

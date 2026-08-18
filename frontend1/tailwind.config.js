@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Clinical Precision System Color Palette
+        // Stitch Clinical Precision System Color Palette
         'inverse-primary': '#80d5cb',
         'inverse-on-surface': '#eef1f0',
         'surface-container-low': '#f1f4f3',
@@ -55,47 +55,44 @@ export default {
         'primary': '#005c55',
       },
       borderRadius: {
-        'DEFAULT': '0.25rem',
-        'lg': '0.5rem',
-        'xl': '0.75rem',
+        'DEFAULT': '0.375rem',  // 6px - slightly more modern
+        'lg': '0.5rem',         // 8px
+        'xl': '0.75rem',        // 12px
         'full': '9999px',
       },
       spacing: {
-        'lg': '32px',
-        'xs': '4px',
-        'touch-target-min': '48px',
+        'xs': '6px',
         'sm': '12px',
-        'container-max-width': '640px',
-        'md': '24px',
-        'xl': '48px',
+        'md': '16px',
+        'lg': '24px',
+        'xl': '32px',
         'base': '8px',
+        'touch-target-min': '44px',
       },
       maxWidth: {
         'container': '640px',
       },
       fontFamily: {
-        'headline-xl': ['Manrope', 'sans-serif'],
-        'headline-lg': ['Manrope', 'sans-serif'],
-        'headline-md': ['Manrope', 'sans-serif'],
-        'body-lg': ['Atkinson Hyperlegible', 'Inter', 'sans-serif'],
-        'body-md': ['Atkinson Hyperlegible', 'Inter', 'sans-serif'],
-        'label-md': ['Atkinson Hyperlegible', 'Inter', 'sans-serif'],
-        'sans': ['Atkinson Hyperlegible', 'Inter', 'system-ui', 'sans-serif'],
+        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'SF Pro Text', 'Segoe UI', 'Roboto', 'system-ui', 'sans-serif'],
+        'headline': ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'SF Pro Display', 'Segoe UI', 'sans-serif'],
       },
       fontSize: {
-        'headline-xl': ['32px', { lineHeight: '40px', letterSpacing: '-0.02em', fontWeight: '700' }],
-        'headline-xl-mobile': ['28px', { lineHeight: '36px', fontWeight: '700' }],
-        'headline-lg': ['24px', { lineHeight: '32px', letterSpacing: '-0.01em', fontWeight: '700' }],
-        'headline-md': ['20px', { lineHeight: '28px', fontWeight: '600' }],
-        'body-lg': ['18px', { lineHeight: '28px', fontWeight: '400' }],
-        'body-md': ['16px', { lineHeight: '24px', fontWeight: '400' }],
-        'label-md': ['16px', { lineHeight: '20px', letterSpacing: '0.05em', fontWeight: '600' }],
+        // Headlines - more minimal
+        'headline-xl': ['24px', { lineHeight: '32px', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'headline-xl-mobile': ['22px', { lineHeight: '28px', fontWeight: '600' }],
+        'headline-lg': ['20px', { lineHeight: '28px', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'headline-md': ['17px', { lineHeight: '24px', fontWeight: '600' }],
+        // Body - smaller, tighter
+        'body-lg': ['15px', { lineHeight: '22px', fontWeight: '400' }],
+        'body-md': ['14px', { lineHeight: '20px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '18px', fontWeight: '400' }],
+        'body-xs': ['12px', { lineHeight: '16px', fontWeight: '400' }],
+        // Labels - minimal
+        'label-lg': ['15px', { lineHeight: '20px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'label-md': ['14px', { lineHeight: '18px', letterSpacing: '0.01em', fontWeight: '500' }],
+        'label-sm': ['13px', { lineHeight: '16px', fontWeight: '500' }],
       },
       boxShadow: {
-        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         'header': '0 1px 8px rgba(0, 0, 0, 0.04)',
         'bottom-nav': '0 -1px 8px rgba(0, 0, 0, 0.04)',
       },
@@ -106,4 +103,3 @@ export default {
   },
   plugins: [],
 }
-

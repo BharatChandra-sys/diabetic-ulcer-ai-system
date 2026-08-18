@@ -17,18 +17,20 @@ import { logout }          from './services/api'
 // ── Full-screen loading spinner ───────────────────────────────────────────────
 function LoadingScreen() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-[#308ce8] flex items-center justify-center">
-            <span className="material-symbols-outlined text-white text-xl">health_metrics</span>
-          </div>
-          <span className="text-xl font-bold text-slate-900">MedVision AI</span>
+    <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="flex flex-col items-center gap-md">
+        <div className="flex items-center gap-sm">
+          <img
+            alt="MedVision AI logo"
+            className="h-12 w-12 object-contain"
+            src="https://lh3.googleusercontent.com/aida/AP1WRLtPhFC4UXGrBEfVYI_xJgb2ekO8uk4UTzjUSqbH-e7jh7iHcRp3oRC9NeY2aVIb9ANHyG-4TIfeLhGUOc-jPxuqZuEZrchuPLi9kKfmbLhmCLTg-1Yq1R7wqkxncx9_JdoiGXQPX8T4TcBubjkBuzg_lioaomAe5qopKu-8ePyeWu8vlYxsCnuc7MmeZI5ivEfwAr4YPDWimz_v4BtcvKqiLNWH7RoFnwOqQ5BpMKJ1KVVmqA3GH_OfqJo"
+          />
+          <span className="font-headline-lg text-headline-lg text-primary-container">MedVision AI</span>
         </div>
-        <div className="h-1 w-48 rounded-full bg-slate-200 overflow-hidden">
-          <div className="h-full w-1/3 rounded-full bg-[#308ce8] animate-[shimmer_1.5s_infinite]" />
+        <div className="h-1 w-48 rounded-full bg-surface-container overflow-hidden">
+          <div className="h-full w-1/3 rounded-full bg-primary-container animate-[shimmer_1.5s_infinite]" />
         </div>
-        <p className="text-sm text-slate-500">Loading your workspace...</p>
+        <p className="font-body-md text-body-md text-on-surface-variant">Loading your workspace...</p>
       </div>
     </div>
   )
@@ -79,9 +81,9 @@ function AppRoutes() {
       <Route path="/chatbot"                element={<ProtectedRoute><ChatbotWorkspace onLogout={logout} /></ProtectedRoute>} />
       <Route path="/history"                element={<ProtectedRoute><History onLogout={logout} /></ProtectedRoute>} />
 
-      {/* Catch-all */}
-      <Route path="/"  element={<Navigate to="/dashboard" replace />} />
-      <Route path="*"  element={<Navigate to="/dashboard" replace />} />
+      {/* Catch-all - redirect to login for non-authenticated, dashboard for authenticated */}
+      <Route path="/"  element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="*"  element={<PublicRoute><Login /></PublicRoute>} />
     </Routes>
   )
 }

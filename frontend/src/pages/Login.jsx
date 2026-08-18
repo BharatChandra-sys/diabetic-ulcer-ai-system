@@ -1,19 +1,19 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { firebaseLogin, firebaseGoogleLogin } from '../firebase'
+import Input from '../components/ui/Input'
+import Button from '../components/ui/Button'
 
 export default function Login() {
-  const navigate   = useNavigate()
-  const location   = useLocation()
-  const from       = location.state?.from?.pathname || '/dashboard'
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/dashboard'
 
-  const [email,         setEmail]         = useState(localStorage.getItem('remember_email') || '')
-  const [password,      setPassword]      = useState('')
-  const [loading,       setLoading]       = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
-  const [error,         setError]         = useState('')
-  const [rememberMe,    setRememberMe]    = useState(!!localStorage.getItem('remember_email'))
-  const [showPassword,  setShowPassword]  = useState(false)
+  const [email, setEmail] = useState(localStorage.getItem('remember_email') || '')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [rememberMe, setRememberMe] = useState(!!localStorage.getItem('remember_email'))
 
   function parseError(err) {
     const c = err?.code || ''
@@ -43,205 +43,81 @@ export default function Login() {
     }
   }
 
-  const handleGoogle = async () => {
-    setGoogleLoading(true)
-    setError('')
-    try {
-      await firebaseGoogleLogin()
-      navigate(from, { replace: true })
-    } catch (err) {
-      if (!err?.code?.includes('popup-closed'))
-        setError('Google sign-in failed. Please try again.')
-    } finally {
-      setGoogleLoading(false)
-    }
-  }
-
-  const busy = loading || googleLoading
-
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#308ce8]/8 via-[#f8fafc] to-[#308ce8]/4">
-
-      {/* ── Mobile-friendly centered card ── */}
-      <main className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-[420px]">
-
-          {/* Logo */}
-          <div className="mb-8 flex flex-col items-center gap-3 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#308ce8] shadow-lg shadow-[#308ce8]/30">
-              <span className="material-symbols-outlined text-3xl text-white">health_metrics</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">MedVision AI</h1>
-              <p className="text-sm text-slate-500 mt-0.5">Diabetic foot ulcer detection platform</p>
-            </div>
+    <div className="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+      <main className="flex-1 flex flex-col w-full h-full min-h-screen items-center justify-center py-lg px-md bg-surface">
+        <div className="w-full max-w-container bg-surface-container-lowest rounded-xl shadow-lg flex flex-col p-md md:p-lg">
+          {/* Logo and Title */}
+          <div className="flex flex-col items-center mb-lg">
+            <img
+              alt="MedVision AI logo"
+              className="w-24 h-24 object-contain mb-md rounded-md"
+              src="https://lh3.googleusercontent.com/aida/AP1WRLtPhFC4UXGrBEfVYI_xJgb2ekO8uk4UTzjUSqbH-e7jh7iHcRp3oRC9NeY2aVIb9ANHyG-4TIfeLhGUOc-jPxuqZuEZrchuPLi9kKfmbLhmCLTg-1Yq1R7wqkxncx9_JdoiGXQPX8T4TcBubjkBuzg_lioaomAe5qopKu-8ePyeWu8vlYxsCnuc7MmeZI5ivEfwAr4YPDWimz_v4BtcvKqiLNWH7RoFnwOqQ5BpMKJ1KVVmqA3GH_OfqJo"
+            />
+            <h1 className="font-headline-xl text-headline-xl-mobile text-primary-container text-center mb-xs">
+              MedVision AI
+            </h1>
+            <p className="font-body-lg text-body-lg text-on-surface-variant text-center">
+              Track your foot health, simply.
+            </p>
           </div>
 
-          {/* Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5 overflow-hidden">
+          {/* Error Message */}
+          {error && (
+            <div className="mb-md p-md bg-error-container rounded-xl flex items-start gap-sm border border-error/20">
+              <span className="material-symbols-outlined text-error text-[20px]">error</span>
+              <p className="font-body-md text-body-md text-on-error-container">{error}</p>
+            </div>
+          )}
 
-            {/* Header */}
-            <div className="px-8 pt-8 pb-6 text-center border-b border-slate-100">
-              <h2 className="text-xl font-bold text-slate-900">Welcome back</h2>
-              <p className="mt-1 text-sm text-slate-500">Sign in to your account</p>
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-md w-full">
+            <Input
+              label="Email Address"
+              type="email"
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              showPasswordToggle
+              required
+            />
+
+            <Link
+              to="/forgot-password"
+              className="h-touch-target-min flex items-center self-start font-label-md text-label-md text-primary-container hover:underline focus:outline-none focus:ring-2 focus:ring-primary-container rounded-sm px-xs -ml-xs"
+            >
+              Forgot password?
+            </Link>
+
+            <Button type="submit" disabled={loading} className="mt-sm">
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
+
+            <div className="flex items-center justify-center w-full my-sm">
+              <div className="h-[1px] bg-surface-variant flex-1"></div>
+              <span className="px-sm font-body-md text-body-md text-on-surface-variant">or</span>
+              <div className="h-[1px] bg-surface-variant flex-1"></div>
             </div>
 
-            <div className="px-8 py-6 space-y-4">
-              {/* Google */}
-              <button
-                type="button"
-                onClick={handleGoogle}
-                disabled={busy}
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 font-semibold text-slate-700 text-sm shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] disabled:opacity-60"
-              >
-                {googleLoading
-                  ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-[#308ce8]" />
-                  : <svg className="h-4 w-4" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                }
-                Continue with Google
-              </button>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-slate-200" />
-                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">or</span>
-                <div className="flex-1 h-px bg-slate-200" />
-              </div>
-
-              {/* Email/Password form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Email */}
-                <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-slate-700">Email</label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-slate-400">mail</span>
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-[#308ce8] focus:bg-white focus:ring-2 focus:ring-[#308ce8]/20"
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-sm font-semibold text-slate-700">Password</label>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/forgot-password')}
-                      className="text-xs font-medium text-[#308ce8] hover:underline"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-slate-400">lock</span>
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-[#308ce8] focus:bg-white focus:ring-2 focus:ring-[#308ce8]/20"
-                      placeholder="••••••••"
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((p) => !p)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      <span className="material-symbols-outlined text-lg">
-                        {showPassword ? 'visibility_off' : 'visibility'}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Remember me */}
-                <label className="flex items-center gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#308ce8] focus:ring-[#308ce8]/20"
-                  />
-                  <span className="text-sm text-slate-600">Remember me on this device</span>
-                </label>
-
-                {/* Error */}
-                {error && (
-                  <div className="flex items-center gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3">
-                    <span className="material-symbols-outlined text-red-500 text-lg flex-shrink-0">error</span>
-                    <p className="text-sm text-red-700">{error}</p>
-                  </div>
-                )}
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={busy}
-                  className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#308ce8] to-[#2575c0] py-3.5 text-sm font-bold text-white shadow-lg shadow-[#308ce8]/25 transition-all hover:-translate-y-px hover:shadow-[#308ce8]/40 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {loading && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent animate-[shimmer_1.5s_infinite]" />
-                  )}
-                  <span className="relative flex items-center justify-center gap-2">
-                    {loading
-                      ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />Signing in...</>
-                      : <>Sign In<span className="material-symbols-outlined text-lg">arrow_forward</span></>
-                    }
-                  </span>
-                </button>
-              </form>
-            </div>
-
-            {/* Footer */}
-            <div className="bg-slate-50 border-t border-slate-100 px-8 py-5 text-center">
-              <p className="text-sm text-slate-600">
-                Don&apos;t have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => navigate('/signup')}
-                  className="font-bold text-[#308ce8] hover:underline"
-                >
-                  Create one
-                </button>
-              </p>
-            </div>
-          </div>
-
-          {/* Trust badges */}
-          <div className="mt-6 flex items-center justify-center gap-5 text-xs text-slate-400">
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">verified_user</span>
-              Firebase Auth
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">encrypted</span>
-              HIPAA Compliant
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">lock</span>
-              256-bit SSL
-            </span>
-          </div>
+            <Button variant="secondary" onClick={() => navigate('/signup')}>
+              Create Account
+            </Button>
+          </form>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="py-6 text-center text-xs text-slate-400">
-        © 2024 MedVision AI — For clinical screening purposes only
-      </footer>
     </div>
   )
 }

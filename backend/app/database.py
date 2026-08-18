@@ -14,20 +14,21 @@ def _make_engine():
         logger.info("✓ Connected to SQLite (dev mode)")
         return engine
 
-    # PostgreSQL (Render / Neon / production)
-    # Render's free-tier postgres uses ?sslmode=require
-    if "postgresql" in url or "postgres" in url:
-        # Ensure ssl for Render postgres
+    # PostgreSQL (Neon / Render / Supabase / production)
+    if "postgresql" in url or "postgres://" in url:
+        # Render sometimes gives postgres:// — SQLAlchemy needs postgresql://
+        url = url.replace("postgres://", "postgresql://", 1)
+        # Ensure SSL for cloud providers
         if "sslmode" not in url:
             url = url + ("&" if "?" in url else "?") + "sslmode=require"
         engine = create_engine(
             url,
-            pool_size=5,          # keep 5 connections ready
-            max_overflow=10,      # allow 10 extra burst connections
-            pool_pre_ping=True,   # verify connections before use (handles idle drops)
-            pool_recycle=300,     # recycle after 5 min (avoids stale connections)
+            pool_size=5,
+            max_overflow=10,
+            pool_pre_ping=True,   # drop dead connections automatically
+            pool_recycle=300,     # recycle after 5 min (Neon idles connections)
         )
-        logger.info(f"✓ Connected to PostgreSQL: ...{url.split('@')[-1]}")
+        logger.info(f"✓ Connected to PostgreSQL (Neon): ...{url.split('@')[-1].split('?')[0]}")
         return engine
 
     # Fallback

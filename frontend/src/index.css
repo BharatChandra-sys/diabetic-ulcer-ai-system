@@ -1,9 +1,97 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+    font-family: 'Atkinson Hyperlegible', 'Inter', sans-serif;
+  }
+  
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  
+  /* Hide scrollbars but keep functionality */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn-primary {
+    @apply h-14 w-full bg-primary-container text-on-primary font-label-md text-label-md rounded-xl shadow-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply h-14 w-full bg-surface-container-lowest text-primary-container font-label-md text-label-md rounded-xl shadow-sm ring-1 ring-primary-container hover:bg-surface-container-low focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container transition-colors;
+  }
+  
+  /* Input Styles */
+  .input-field {
+    @apply h-14 px-sm rounded-xl bg-surface-bright text-on-surface font-body-lg text-body-lg shadow-sm border-none focus:ring-2 focus:ring-primary-container focus:outline-none transition-shadow;
+  }
+  
+  /* Card Styles */
+  .card {
+    @apply bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm;
+  }
+  
+  /* Status Badge */
+  .status-badge {
+    @apply flex items-center gap-xs px-sm py-1 rounded-full w-max font-label-md text-label-md;
+  }
+  
+  .status-badge-success {
+    @apply status-badge bg-primary-container text-on-primary-container;
+  }
+  
+  .status-badge-warning {
+    @apply status-badge bg-tertiary-container text-on-tertiary-container;
+  }
+  
+  .status-badge-error {
+    @apply status-badge bg-error-container text-on-error-container;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Active navigation state */
+  .nav-active {
+    @apply text-primary font-bold;
+  }
+  
+  /* Shimmer animation for loading states */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(300%);
+    }
+  }
+}
 
 /* Loading bar shimmer */
 @keyframes shimmer {
