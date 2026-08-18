@@ -1,11 +1,11 @@
 import torch
 import numpy as np
-from backend.app.services.model_loader import get_model, get_segmentation_model
-from backend.app.ml.preprocess import preprocess_image, preprocess_clinical_data
-from backend.app.ml.ulcer_area_estimator import estimate_ulcer_area
-from backend.app.explainability.gradcam import generate_gradcam_from_tensor
-from backend.app.explainability.lime_explainer import generate_lime_explanation
-from backend.app.explainability.heatmap_renderer import render_heatmap_overlay
+from app.services.model_loader import get_model, get_segmentation_model
+from app.ml.preprocess import preprocess_image, preprocess_clinical_data
+from app.ml.ulcer_area_estimator import estimate_ulcer_area
+from app.explainability.gradcam import generate_gradcam_from_tensor
+from app.explainability.lime_explainer import generate_lime_explanation
+from app.explainability.heatmap_renderer import render_heatmap_overlay
 import time
 import logging
 

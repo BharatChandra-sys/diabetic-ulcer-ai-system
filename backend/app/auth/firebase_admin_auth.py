@@ -6,7 +6,7 @@ import logging
 import os
 from typing import Optional
 import requests
-from backend.app.config import settings
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 

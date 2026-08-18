@@ -9,9 +9,9 @@ from typing import Optional
 import logging
 import requests as http_requests
 
-from backend.app.database import get_db
-from backend.app.models import User
-from backend.app.auth.firebase_admin_auth import (
+from app.database import get_db
+from app.models import User
+from app.auth.firebase_admin_auth import (
     sign_up_with_email_password,
     sign_in_with_email_password,
     refresh_id_token,
@@ -168,9 +168,9 @@ async def refresh_token(request: RefreshTokenRequest):
 # ── Forgot Password — Step 1: Send OTP ───────────────────────────────────
 @router.post("/forgot-password")
 async def forgot_password(request: PasswordResetRequest):
-    from backend.app.services.otp_service import generate_otp
-    from backend.app.services.email_service import send_otp_email
-    from backend.app.config import settings as cfg
+    from app.services.otp_service import generate_otp
+    from app.services.email_service import send_otp_email
+    from app.config import settings as cfg
 
     otp = generate_otp(request.email)
 
@@ -186,7 +186,7 @@ async def forgot_password(request: PasswordResetRequest):
 # ── Forgot Password — Step 2: Verify OTP ─────────────────────────────────
 @router.post("/verify-otp")
 async def verify_otp_route(request: OTPVerifyRequest):
-    from backend.app.services.otp_service import verify_otp
+    from app.services.otp_service import verify_otp
 
     success, message = verify_otp(request.email, request.otp)
     if not success:
@@ -197,8 +197,8 @@ async def verify_otp_route(request: OTPVerifyRequest):
 # ── Forgot Password — Step 3: Reset with verified OTP ────────────────────
 @router.post("/reset-with-otp")
 async def reset_with_otp(request: ResetWithOTPRequest):
-    from backend.app.services.otp_service import is_otp_verified, consume_otp
-    from backend.app.config import settings as cfg
+    from app.services.otp_service import is_otp_verified, consume_otp
+    from app.config import settings as cfg
     import urllib.parse
 
     if len(request.new_password) < 6:

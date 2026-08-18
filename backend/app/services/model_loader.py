@@ -1,8 +1,8 @@
 import torch
 import os
-from backend.app.ml.cnn_model import create_model
-from backend.app.ml.multimodal_model import create_multimodal_model
-from backend.app.config import settings
+from app.ml.cnn_model import create_model
+from app.ml.multimodal_model import create_multimodal_model
+from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)

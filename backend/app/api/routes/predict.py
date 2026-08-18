@@ -2,10 +2,10 @@ import logging
 
 from fastapi import APIRouter
 
-from backend.app.pipelines.explainability_pipeline import run_explainability_pipeline
-from backend.app.pipelines.inference_pipeline import run_inference_pipeline
-from backend.app.schemas.predict_schema import PredictionRequest, PredictionResponse
-from backend.app.services.report_service import generate_prediction_report
+from app.pipelines.explainability_pipeline import run_explainability_pipeline
+from app.pipelines.inference_pipeline import run_inference_pipeline
+from app.schemas.predict_schema import PredictionRequest, PredictionResponse
+from app.services.report_service import generate_prediction_report
 
 router = APIRouter(prefix="/api")
 logger = logging.getLogger(__name__)

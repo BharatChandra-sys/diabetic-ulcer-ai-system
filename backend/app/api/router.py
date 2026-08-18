@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from backend.app.api.routes import clinical_data, health, predict
+from app.api.routes import clinical_data, health, predict
 
 api_router = APIRouter()
 

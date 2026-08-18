@@ -1,4 +1,4 @@
-from backend.app.config import settings
+from app.config import settings
 import os
 from typing import Tuple, List
 

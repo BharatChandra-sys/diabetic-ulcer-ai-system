@@ -11,8 +11,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import User
+from app.database import get_db
+from app.models import User
 
 logger = logging.getLogger(__name__)
 security = HTTPBearer()
@@ -71,7 +71,7 @@ def _verify_firebase_token(token: str) -> dict | None:
 def _verify_legacy_jwt(token: str) -> str | None:
     """Fallback: verify our old HS256 JWT and return email."""
     try:
-        from backend.app.auth.jwt_handler import decode_token
+        from app.auth.jwt_handler import decode_token
         return decode_token(token)
     except Exception:
         return None

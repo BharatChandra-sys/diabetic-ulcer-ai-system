@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Float, String
-from backend.app.db.database import Base
+from app.db.database import Base
 
 class PredictionLog(Base):
 

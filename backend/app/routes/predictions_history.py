@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Optional
-from backend.app.database import get_db
-from backend.app.auth.dependencies import optional_auth
-from backend.app.models import User
+from app.database import get_db
+from app.auth.dependencies import optional_auth
+from app.models import User
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 
@@ -29,7 +29,7 @@ def get_prediction_history(
         }
     
     # Query predictions from database for authenticated users
-    from backend.app.models import PredictionLog
+    from app.models import PredictionLog
     
     query = db.query(PredictionLog).filter(
         PredictionLog.user_id == user.id

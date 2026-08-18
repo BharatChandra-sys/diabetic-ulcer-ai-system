@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from backend.app.models import PredictionLog, User
+from app.models import PredictionLog, User
 from datetime import datetime
 
 def generate_prediction_report(db: Session, user_id: int, patient_id: int = None):

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from backend.app.database import get_db
-from backend.app.models import User, Patient, PredictionLog
-from backend.app.auth.dependencies import get_current_user
+from app.database import get_db
+from app.models import User, Patient, PredictionLog
+from app.auth.dependencies import get_current_user
 from datetime import datetime, timedelta
 
 router = APIRouter(prefix="/statistics", tags=["statistics"])

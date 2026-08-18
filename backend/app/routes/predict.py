@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.schemas import PredictionRequest, PredictionResponse
-from backend.app.services.inference_service import run_inference
-from backend.app.services.report_service import save_prediction_log
-from backend.app.auth.dependencies import get_current_user
-from backend.app.models import User
-from backend.app.monitoring.metrics import track_prediction, track_inference_time
+from app.database import get_db
+from app.schemas import PredictionRequest, PredictionResponse
+from app.services.inference_service import run_inference
+from app.services.report_service import save_prediction_log
+from app.auth.dependencies import get_current_user
+from app.models import User
+from app.monitoring.metrics import track_prediction, track_inference_time
 import time
 
 router = APIRouter(prefix="/predict", tags=["prediction"])

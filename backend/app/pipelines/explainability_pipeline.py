@@ -1,4 +1,4 @@
-from backend.app.explainability.lime_explainer import generate_lime_explanation
+from app.explainability.lime_explainer import generate_lime_explanation
 
 
 def run_explainability_pipeline(text: str, prediction: int) -> str:

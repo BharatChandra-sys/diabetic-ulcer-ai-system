@@ -4,7 +4,7 @@ Runs on startup to keep schema up-to-date without shell access.
 """
 import logging
 from sqlalchemy import text, inspect
-from backend.app.database import engine
+from app.database import engine
 
 logger = logging.getLogger(__name__)
 

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.services.progression_service import analyze_progression, add_ulcer_image, get_patient_timeline
-from backend.app.services.image_service import upload_image
-from backend.app.services.inference_service import run_inference
-from backend.app.auth.dependencies import get_current_user
-from backend.app.models import User
-from backend.app.services.patient_service import get_patient
+from app.database import get_db
+from app.services.progression_service import analyze_progression, add_ulcer_image, get_patient_timeline
+from app.services.image_service import upload_image
+from app.services.inference_service import run_inference
+from app.auth.dependencies import get_current_user
+from app.models import User
+from app.services.patient_service import get_patient
 
 router = APIRouter(prefix="/patients", tags=["progression"])
 

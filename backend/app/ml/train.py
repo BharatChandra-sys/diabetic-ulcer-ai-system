@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from backend.app.ml.cnn_model import create_model
-from backend.app.ml.dataset_loader import load_dataset
-from backend.app.config import settings
+from app.ml.cnn_model import create_model
+from app.ml.dataset_loader import load_dataset
+from app.config import settings
 
 def train_model(dataset_path: str, epochs: int = 10, batch_size: int = 32, learning_rate: float = 0.001):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

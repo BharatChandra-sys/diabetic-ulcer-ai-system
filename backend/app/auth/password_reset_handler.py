@@ -4,8 +4,8 @@ from typing import Optional
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from backend.app.config import settings
-from backend.app.core.logger import logger
+from app.config import settings
+from app.core.logger import logger
 
 
 def generate_password_reset_token(email: str, expires_delta: Optional[timedelta] = None) -> str:

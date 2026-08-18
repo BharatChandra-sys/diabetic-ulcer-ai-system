@@ -4,10 +4,10 @@ import torch
 import logging
 from pathlib import Path
 from typing import Union, Optional
-from backend.app.ml_models.cnn_ulcer_model import CNNUlcerModel, create_cnn_model
-from backend.app.ml_models.segmentation_model import create_segmentation_model
-from backend.app.ml_models.multimodal_model import MultimodalModel, create_multimodal_model
-from backend.app.core.settings import settings
+from app.ml_models.cnn_ulcer_model import CNNUlcerModel, create_cnn_model
+from app.ml_models.segmentation_model import create_segmentation_model
+from app.ml_models.multimodal_model import MultimodalModel, create_multimodal_model
+from app.core.settings import settings
 
 logger = logging.getLogger(__name__)
 

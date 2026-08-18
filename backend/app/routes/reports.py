@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Query, Depends, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.services.report_service import generate_prediction_report
-from backend.app.services.pdf_service import generate_prediction_report_pdf, generate_patient_analysis_pdf
-from backend.app.auth.dependencies import get_current_user
-from backend.app.models import User, PredictionLog, Patient
+from app.database import get_db
+from app.services.report_service import generate_prediction_report
+from app.services.pdf_service import generate_prediction_report_pdf, generate_patient_analysis_pdf
+from app.auth.dependencies import get_current_user
+from app.models import User, PredictionLog, Patient
 import io
 from datetime import datetime
 

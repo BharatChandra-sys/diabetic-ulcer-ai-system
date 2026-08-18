@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
-from backend.app.database import get_db
-from backend.app.auth.dependencies import optional_auth
-from backend.app.models import User
+from app.database import get_db
+from app.auth.dependencies import optional_auth
+from app.models import User
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 

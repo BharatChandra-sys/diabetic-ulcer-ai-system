@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.app.models import Patient, User
-from backend.app.schemas import PatientCreate, PatientResponse
+from app.models import Patient, User
+from app.schemas import PatientCreate, PatientResponse
 
 def create_patient(db: Session, user_id: int, patient: PatientCreate):
     db_patient = Patient(

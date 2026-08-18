@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
-from backend.app.database import get_db
-from backend.app.auth.dependencies import optional_auth
-from backend.app.models import User
-from backend.app.services.inference_service import run_inference
+from app.database import get_db
+from app.auth.dependencies import optional_auth
+from app.models import User
+from app.services.inference_service import run_inference
 import os
 import uuid
 from datetime import datetime
@@ -101,7 +101,7 @@ async def analyze_foot_scan(
     # Save to history if user is logged in and requested
     if user and save_to_history:
         try:
-            from backend.app.models import PredictionLog
+            from app.models import PredictionLog
             
             prediction_log = PredictionLog(
                 user_id=user.id,
@@ -150,7 +150,7 @@ async def get_prediction_result(
     
     # If user is authenticated, check database
     if user:
-        from backend.app.models import PredictionLog
+        from app.models import PredictionLog
         
         prediction = db.query(PredictionLog).filter(
             PredictionLog.id == prediction_id,

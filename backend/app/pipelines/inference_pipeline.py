@@ -1,4 +1,4 @@
-from backend.app.services.ml_service import run_prediction
+from app.services.ml_service import run_prediction
 
 
 def run_inference_pipeline(text: str) -> dict[str, float | int]:

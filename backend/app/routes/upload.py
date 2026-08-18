@@ -1,9 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, Depends
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.services.image_service import upload_image
-from backend.app.auth.dependencies import get_current_user
-from backend.app.models import User
+from app.database import get_db
+from app.services.image_service import upload_image
+from app.auth.dependencies import get_current_user
+from app.models import User
 
 router = APIRouter(prefix="", tags=["images"])
 

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
-from backend.app.schemas import PatientCreate, PatientResponse
-from backend.app.services.patient_service import create_patient, get_user_patients, get_patient, delete_patient
-from backend.app.auth.dependencies import get_current_user
-from backend.app.models import User
+from app.database import get_db
+from app.schemas import PatientCreate, PatientResponse
+from app.services.patient_service import create_patient, get_user_patients, get_patient, delete_patient
+from app.auth.dependencies import get_current_user
+from app.models import User
 
 router = APIRouter(prefix="/patients", tags=["patients"])
 

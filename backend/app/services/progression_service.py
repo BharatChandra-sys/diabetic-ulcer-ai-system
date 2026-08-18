@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.app.models import UlcerImage
-from backend.app.schemas import PatientProgressionResponse
+from app.models import UlcerImage
+from app.schemas import PatientProgressionResponse
 
 def get_patient_timeline(db: Session, patient_id: int):
     images = db.query(UlcerImage).filter(UlcerImage.patient_id == patient_id).order_by(UlcerImage.created_at).all()

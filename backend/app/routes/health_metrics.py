@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import Optional, List, Dict
 from sqlalchemy.orm import Session
-from backend.app.database import get_db
+from app.database import get_db
 
 router = APIRouter(prefix="/health-metrics", tags=["health-metrics"])
 

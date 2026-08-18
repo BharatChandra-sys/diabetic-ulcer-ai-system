@@ -1,6 +1,6 @@
 from fastapi import UploadFile, HTTPException
-from backend.app.utils.cloud_storage import upload_image_to_cloud, delete_image_from_cloud
-from backend.app.utils.validators import validate_image_extension, validate_image_size
+from app.utils.cloud_storage import upload_image_to_cloud, delete_image_from_cloud
+from app.utils.validators import validate_image_extension, validate_image_size
 import uuid
 import os
 

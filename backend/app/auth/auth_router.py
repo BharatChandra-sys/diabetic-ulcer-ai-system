@@ -11,12 +11,12 @@ frontend.  These endpoints remain for:
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.app.database import get_db
-from backend.app.models import User
-from backend.app.schemas import UserCreate, UserLogin, TokenResponse
-from backend.app.auth.password_utils import hash_password, verify_password
-from backend.app.auth.jwt_handler import create_access_token
-from backend.app.auth.dependencies import get_current_user
+from app.database import get_db
+from app.models import User
+from app.schemas import UserCreate, UserLogin, TokenResponse
+from app.auth.password_utils import hash_password, verify_password
+from app.auth.jwt_handler import create_access_token
+from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
