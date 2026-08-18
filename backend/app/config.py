@@ -123,8 +123,13 @@ class Settings(BaseSettings):
     
     def get_cors_origins(self) -> list:
         """Parse CORS origins from comma-separated string"""
+        if not self.allowed_origins or self.allowed_origins.strip() == "":
+            logger.warning("⚠️  ALLOWED_ORIGINS is empty - allowing all origins")
+            return ["*"]
         origins = self.allowed_origins.split(",")
-        return [origin.strip() for origin in origins if origin.strip()]
+        parsed = [origin.strip() for origin in origins if origin.strip()]
+        logger.info(f"Parsed CORS origins: {parsed}")
+        return parsed if parsed else ["*"]
     
     def validate_critical_settings(self):
         """Log warnings for missing critical settings (non-blocking)"""
