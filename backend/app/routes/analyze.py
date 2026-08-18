@@ -4,13 +4,22 @@ from typing import Optional
 from app.database import get_db
 from app.auth.dependencies import optional_auth
 from app.models import User
-from app.services.inference_service import run_inference
 import os
 import uuid
 from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Import the appropriate inference service based on environment
+USE_REMOTE_ML = bool(os.getenv("HUGGINGFACE_ML_URL"))
+
+if USE_REMOTE_ML:
+    from app.services.remote_ml_service import run_inference_remote as run_inference_async
+    logger.info("✓ Using REMOTE ML inference (Hugging Face)")
+else:
+    from app.services.inference_service import run_inference as run_inference_sync
+    logger.info("✓ Using LOCAL ML inference (PyTorch)")
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 
@@ -53,16 +62,29 @@ async def analyze_foot_scan(
         logger.error(f"Failed to save uploaded file: {e}")
         raise HTTPException(status_code=500, detail="Failed to save uploaded image")
     
-    # Run AI inference with full pipeline (GradCAM, SHAP, LIME, etc.)
+    # Run AI inference (local or remote based on configuration)
     try:
-        result = run_inference(
-            image_url=file_path,
-            age=age or 35,
-            bmi=bmi or 25.0,
-            diabetes_duration=diabetes_duration or 5,
-            infection_signs=infection_signs or "none"
-        )
-        logger.info(f"Inference completed: {result['prediction']} with {result['confidence']:.2f} confidence")
+        if USE_REMOTE_ML:
+            # Call remote Hugging Face ML service (async)
+            result = await run_inference_async(
+                image_url=file_path,
+                age=age or 35,
+                bmi=bmi or 25.0,
+                diabetes_duration=diabetes_duration or 5,
+                infection_signs=infection_signs or "none"
+            )
+            logger.info(f"Remote ML inference completed: {result['prediction']} with {result['confidence']:.2f} confidence")
+        else:
+            # Run local PyTorch inference (sync)
+            result = run_inference_sync(
+                image_url=file_path,
+                age=age or 35,
+                bmi=bmi or 25.0,
+                diabetes_duration=diabetes_duration or 5,
+                infection_signs=infection_signs or "none"
+            )
+            logger.info(f"Local ML inference completed: {result['prediction']} with {result['confidence']:.2f} confidence")
+        
         logger.info(f"GradCAM overlay generated: {'Yes' if result.get('gradcam_overlay') else 'No'}")
         logger.info(f"SHAP importance keys: {list(result.get('shap_importance', {}).keys())}")
     except Exception as e:

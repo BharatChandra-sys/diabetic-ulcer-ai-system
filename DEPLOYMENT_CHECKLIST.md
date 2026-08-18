@@ -1,201 +1,228 @@
-# MedVision AI - Deployment Checklist
+# ✅ Deployment Checklist - Follow This!
 
-Use this checklist to track your deployment progress.
+## 📋 HUGGING FACE DEPLOYMENT
 
-## 📋 Pre-Deployment Preparation
+You've already created: `https://huggingface.co/spaces/Bharat2004/medvisionai`
 
-- [ ] Code pushed to GitHub
-- [ ] All `.env` files excluded from Git
-- [ ] `requirements.txt` is up to date
-- [ ] Firebase project created
-- [ ] Gmail App Password generated
+### Files to Upload (via Web UI)
+
+Go to your space → Click "Files" → "Add file" → "Upload files"
+
+Upload these files from `huggingface-ml-service/` folder:
+
+- [ ] `app.py` (Main ML service code)
+- [ ] `requirements.txt` (Dependencies)
+- [ ] `best_dfu_model.pth` (Model weights - if you have it, optional)
+
+### Files to Create (via Web UI)
+
+Click "Files" → "Add file" → "Create a new file"
+
+#### 1. Create `Dockerfile`:
+- Name: `Dockerfile`
+- Copy content from: `huggingface-ml-service/Dockerfile`
+- Commit
+
+#### 2. Create `README.md`:
+- Name: `README.md`
+- Copy content from: `huggingface-ml-service/README-HF.md`
+- Commit
+
+### Wait for Build
+
+- [ ] Go to "Logs" tab
+- [ ] Wait 5-10 minutes for Docker build
+- [ ] Status changes to "Running"
+- [ ] Test: Open `https://bharat2004-medvisionai.hf.space/health`
+- [ ] Should see: `{"status": "healthy", "model_loaded": true}`
+
+✅ **Your ML Service URL**: `https://bharat2004-medvisionai.hf.space`
 
 ---
 
-## 🗄️ Database Setup (Neon PostgreSQL)
+## 📋 RENDER BACKEND UPDATE
 
-- [ ] Created Neon account at neon.tech
-- [ ] Created new project: `medvision-ai-db`
-- [ ] Noted down connection string
-- [ ] Enabled connection pooling (optional but recommended)
-- [ ] Connection string format verified: `postgresql://...?sslmode=require`
+### Step 1: Update Local Files
 
-**Connection String:** (Save securely)
-```
-postgresql://[user]:[password]@[host]/[database]?sslmode=require
-```
+```bash
+cd c:\Users\bc833\Downloads\diabetic-ulcer-ai-system
 
----
+# Backup current requirements
+copy backend\requirements.txt backend\requirements-full-backup.txt
 
-## 🚀 Backend Deployment (Render.com)
-
-### Account & Service Setup
-- [ ] Created Render account at render.com
-- [ ] Connected GitHub account
-- [ ] Created new Web Service
-- [ ] Selected `diabetic-ulcer-ai-system` repository
-
-### Service Configuration
-- [ ] Name set to: `medvision-ai-backend`
-- [ ] Root Directory: `backend`
-- [ ] Runtime: `Python 3`
-- [ ] Build Command: `pip install -r requirements.txt`
-- [ ] Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- [ ] Instance Type: `Free`
-
-### Environment Variables Set
-- [ ] `DATABASE_URL` - Neon connection string
-- [ ] `SECRET_KEY` - Generated random string (32+ chars)
-- [ ] `JWT_SECRET_KEY` - Generated random string (32+ chars)
-- [ ] `FIREBASE_PROJECT_ID` - From Firebase Console
-- [ ] `FIREBASE_WEB_API_KEY` - From Firebase Console
-- [ ] `FIREBASE_SERVICE_ACCOUNT_JSON` - Single-line JSON
-- [ ] `SMTP_USERNAME` - Gmail address
-- [ ] `SMTP_PASSWORD` - Gmail App Password
-- [ ] `SMTP_FROM_EMAIL` - Gmail address
-- [ ] `ENVIRONMENT` - Set to `production`
-- [ ] `DEBUG` - Set to `False`
-- [ ] `ALLOWED_ORIGINS` - Will add frontend URL later
-
-### Deployment
-- [ ] Clicked "Create Web Service"
-- [ ] Deployment started successfully
-- [ ] Build completed without errors
-- [ ] Service is live and running
-
-**Backend URL:** (Save this)
-```
-https://medvision-ai-backend.onrender.com
+# Use lightweight version
+copy backend\requirements-render.txt backend\requirements.txt
 ```
 
----
+### Step 2: Commit to Git
 
-## ✅ Backend Verification
+```bash
+git status
+git add .
+git commit -m "Switch to remote ML inference (Hugging Face)"
+git push origin main
+```
 
-- [ ] Health check works: `[backend-url]/health` returns `{"status":"healthy"}`
-- [ ] API docs load: `[backend-url]/docs` shows Swagger UI
-- [ ] Database connected: Logs show "✓ Database connection verified"
-- [ ] Can create account: `POST /api/auth/signup` works
-- [ ] Can sign in: `POST /api/auth/signin` works
-- [ ] Password reset email sent: `POST /api/auth/forgot-password` works
+**Files being committed:**
+- [ ] `backend/requirements.txt` (lightweight version - no PyTorch)
+- [ ] `backend/app/routes/analyze.py` (updated to use remote ML)
+- [ ] `backend/app/services/remote_ml_service.py` (new file)
+- [ ] `huggingface-ml-service/` folder (all files)
 
----
+### Step 3: Update Render Environment
 
-## 🤖 UptimeRobot Setup
+1. [ ] Go to https://dashboard.render.com
+2. [ ] Select your service: `diabetic-ulcer-ai-system`
+3. [ ] Click "Environment" tab
+4. [ ] Click "Add Environment Variable"
+5. [ ] Add:
+   - **Key**: `HUGGINGFACE_ML_URL`
+   - **Value**: `https://bharat2004-medvisionai.hf.space`
+6. [ ] Click "Save Changes"
 
-- [ ] Created UptimeRobot account at uptimerobot.com
-- [ ] Email verified
-- [ ] Added new monitor:
-  - [ ] Type: HTTP(s)
-  - [ ] Name: MedVision AI Backend
-  - [ ] URL: `[backend-url]/health`
-  - [ ] Interval: 5 minutes
-- [ ] Monitor shows "Up" status
+Render will auto-redeploy (~5 minutes).
 
----
+### Step 4: Verify Render Logs
 
-## 🌐 Frontend Deployment (Vercel) - Coming Next
+In Render dashboard, check logs for:
 
-After backend is verified, deploy frontend:
-
-### Preparation
-- [ ] Backend URL confirmed and working
-- [ ] Firebase web config ready
-- [ ] Google OAuth Client ID ready
-
-### Vercel Deployment
-- [ ] Create Vercel account
-- [ ] Import GitHub repository
-- [ ] Configure build settings:
-  - [ ] Framework: Vite
-  - [ ] Root Directory: `frontend1`
-  - [ ] Build Command: `npm run build`
-  - [ ] Output Directory: `dist`
-
-### Frontend Environment Variables
-- [ ] `VITE_API_BASE_URL` - Backend URL from Render
-- [ ] `VITE_FIREBASE_API_KEY`
-- [ ] `VITE_FIREBASE_AUTH_DOMAIN`
-- [ ] `VITE_FIREBASE_PROJECT_ID`
-- [ ] `VITE_GOOGLE_CLIENT_ID`
-
-### Post-Deployment
-- [ ] Frontend URL obtained
-- [ ] Added frontend URL to Render `ALLOWED_ORIGINS`
-- [ ] Added frontend URL to Firebase Authorized Domains
-- [ ] Added frontend URL to Google OAuth Authorized Origins
+```
+✓ Using REMOTE ML inference (Hugging Face)
+✓ Remote ML service configured: https://bharat2004-medvisionai.hf.space
+✓ MedVision AI ready to serve requests
+```
 
 ---
 
-## 🧪 Final Integration Testing
+## 📋 FINAL TESTING
 
-- [ ] Frontend loads successfully
-- [ ] Can sign up with email/password
-- [ ] Can sign in with email/password
-- [ ] Can reset password (receive email)
-- [ ] Can upload image and get prediction
-- [ ] Can view history
-- [ ] Mobile responsive design works
-- [ ] Google Sign-In works (after OAuth setup)
+### Test 1: ML Service Health
 
----
+```bash
+curl https://bharat2004-medvisionai.hf.space/health
+```
 
-## 📝 Post-Deployment Tasks
+Expected: `{"status": "healthy", "model_loaded": true}`
 
-- [ ] Update README.md with live URLs
-- [ ] Document any production-specific configurations
-- [ ] Set up monitoring/alerting
-- [ ] Test from different devices
-- [ ] Share with beta testers
+- [ ] Works ✅
 
----
+### Test 2: Backend Health
 
-## 🎯 Success Metrics
+```bash
+curl https://diabetic-ulcer-ai-system.onrender.com/health
+```
 
-- ✅ Backend uptime: >99% (monitored by UptimeRobot)
-- ✅ Response time: <2s for API calls
-- ✅ Database queries: <500ms average
-- ✅ Zero critical errors in logs
-- ✅ Email delivery: 100% success rate
+Expected: `{"status": "healthy"}`
 
----
+- [ ] Works ✅
 
-## 📞 Important URLs
+### Test 3: Frontend Upload
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Backend API | `https://medvision-ai-backend.onrender.com` | Main API |
-| API Docs | `https://medvision-ai-backend.onrender.com/docs` | Swagger UI |
-| Health Check | `https://medvision-ai-backend.onrender.com/health` | Status |
-| Frontend | `https://[your-app].vercel.app` | User interface |
-| Database | Neon Dashboard | DB management |
-| Monitoring | UptimeRobot Dashboard | Uptime tracking |
+1. [ ] Open your frontend URL
+2. [ ] Log in
+3. [ ] Upload a foot image
+4. [ ] Click "Analyze"
+5. [ ] **Wait 30-60 seconds** (first time - Hugging Face waking up)
+6. [ ] See results with prediction, confidence, risk score
 
 ---
 
-## 🔐 Security Checklist
+## 🎯 WHAT TO EXPECT
 
-- [ ] All secrets stored in environment variables
-- [ ] No `.env` files committed to Git
-- [ ] Firebase service account JSON secured
-- [ ] Gmail App Password used (not main password)
-- [ ] HTTPS enabled on all endpoints
-- [ ] CORS properly configured
-- [ ] Rate limiting enabled (if needed)
+### First Request (Cold Start)
+- Takes 30-60 seconds
+- Hugging Face Space is waking up from sleep
+- Loading PyTorch model into memory
+- **This is normal!**
+
+### Subsequent Requests
+- Takes 2-5 seconds
+- Much faster once warm
+- Model is already loaded
+
+### If Space Sleeps Again
+- Free tier spaces sleep after 48 hours of inactivity
+- Solution: Set up UptimeRobot (free) to ping `/health` every 5 minutes
+- Or upgrade to Hugging Face paid tier ($9/month always-on)
 
 ---
 
-## 📊 Monitoring Setup
+## 🐛 COMMON ISSUES
 
-- [ ] UptimeRobot monitoring backend
-- [ ] Email alerts configured
-- [ ] Render logs reviewed regularly
-- [ ] Neon database metrics monitored
+### Issue: "Module not found" in Render
+
+**Fix**: Make sure you're using `requirements-render.txt` (no ML libraries)
+
+```bash
+copy backend\requirements-render.txt backend\requirements.txt
+git add backend\requirements.txt
+git commit -m "Fix requirements"
+git push
+```
+
+### Issue: "HUGGINGFACE_ML_URL not set"
+
+**Fix**: Double-check Render environment variables. Should have:
+- Key: `HUGGINGFACE_ML_URL`
+- Value: `https://bharat2004-medvisionai.hf.space` (no trailing slash!)
+
+### Issue: "Connection timeout"
+
+**Cause**: Hugging Face Space is sleeping
+
+**Fix**: 
+1. Go to https://huggingface.co/spaces/Bharat2004/medvisionai
+2. Check if status is "Running"
+3. If "Sleeping", click anywhere to wake it
+4. Wait 30 seconds and try again
+
+### Issue: Render still out of memory
+
+**Check**: Are you using the lightweight requirements?
+
+```bash
+# Check file size
+dir backend\requirements.txt
+
+# Should be ~1 KB (lightweight version)
+# If > 2 KB, you're using the wrong file
+```
 
 ---
 
-**Status:** 🚧 IN PROGRESS
+## ✅ SUCCESS CRITERIA
 
-**Last Updated:** [Current Date]
+All of these should be true:
 
-**Deployed By:** [Your Name]
+- [ ] Hugging Face Space shows "Running" status
+- [ ] `https://bharat2004-medvisionai.hf.space/health` returns healthy
+- [ ] Render backend shows "Live" status
+- [ ] Render logs say "Using REMOTE ML inference"
+- [ ] Frontend can upload images
+- [ ] Analysis returns results (prediction, confidence, risk)
+- [ ] No "out of memory" errors
+
+---
+
+## 🎉 YOU'RE DONE!
+
+Once all checkboxes are ticked, you have:
+
+✅ **100% FREE** full-stack AI deployment:
+- Frontend: Vercel
+- Backend: Render (512MB - lightweight)
+- Database: Neon PostgreSQL
+- ML Service: Hugging Face (16GB)
+
+**Total monthly cost: $0.00** 🚀
+
+---
+
+## 📞 Need Help?
+
+If stuck:
+1. Check Hugging Face Space logs
+2. Check Render backend logs
+3. Verify all environment variables
+4. Make sure you pushed to Git
+5. Try manual redeploy in Render dashboard
