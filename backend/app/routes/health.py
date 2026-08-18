@@ -9,9 +9,9 @@ try:
 except ImportError:
     PSUTIL_AVAILABLE = False
 
-router = APIRouter(prefix="/health", tags=["health"])
+router = APIRouter(tags=["health"])
 
-@router.get("/")
+@router.get("/health")
 def health_check():
     """Health check endpoint for service monitoring - prevents sleeping on Render/Heroku"""
     return {
@@ -28,7 +28,7 @@ def ping():
     """Simple ping endpoint for uptime monitoring"""
     return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
 
-@router.get("/ready")
+@router.get("/health/ready")
 def readiness():
     """Readiness probe for Kubernetes/container orchestration"""
     return {
@@ -40,12 +40,12 @@ def readiness():
         }
     }
 
-@router.get("/live")
+@router.get("/health/live")
 def liveness():
     """Liveness probe for container orchestration"""
     return {"status": "alive", "timestamp": datetime.utcnow().isoformat()}
 
-@router.get("/status")
+@router.get("/health/status")
 def detailed_status():
     """Detailed system status for monitoring"""
     if not PSUTIL_AVAILABLE:
