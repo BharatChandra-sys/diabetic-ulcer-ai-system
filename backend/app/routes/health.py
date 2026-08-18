@@ -1,7 +1,13 @@
 from fastapi import APIRouter
 from datetime import datetime
-import psutil
 import os
+
+# Make psutil optional for minimal deployments
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
 
 router = APIRouter(prefix="/health", tags=["health"])
 
@@ -42,6 +48,13 @@ def liveness():
 @router.get("/status")
 def detailed_status():
     """Detailed system status for monitoring"""
+    if not PSUTIL_AVAILABLE:
+        return {
+            "status": "healthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "system": "metrics unavailable (psutil not installed)"
+        }
+    
     try:
         memory = psutil.virtual_memory()
         disk = psutil.disk_usage('/')
@@ -57,7 +70,7 @@ def detailed_status():
             }
         }
     except:
-        # Fallback if psutil not available or fails
+        # Fallback if psutil fails
         return {
             "status": "healthy",
             "timestamp": datetime.utcnow().isoformat(),

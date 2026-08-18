@@ -1,17 +1,24 @@
-import cloudinary
-import cloudinary.uploader
+# Make cloudinary optional for minimal deployments
+try:
+    import cloudinary
+    import cloudinary.uploader
+    CLOUDINARY_AVAILABLE = True
+except ImportError:
+    CLOUDINARY_AVAILABLE = False
+    
 from app.config import settings
 from PIL import Image
 import io
 
-cloudinary.config(
-    cloud_name=settings.cloudinary_cloud_name,
-    api_key=settings.cloudinary_api_key,
-    api_secret=settings.cloudinary_api_secret
-)
+if CLOUDINARY_AVAILABLE and settings.cloudinary_cloud_name:
+    cloudinary.config(
+        cloud_name=settings.cloudinary_cloud_name,
+        api_key=settings.cloudinary_api_key,
+        api_secret=settings.cloudinary_api_secret
+    )
 
 def upload_image_to_cloud(file_content: bytes, filename: str) -> str:
-    if not settings.cloudinary_cloud_name:
+    if not CLOUDINARY_AVAILABLE or not settings.cloudinary_cloud_name:
         return f"local://{filename}"
     
     try:
@@ -27,7 +34,7 @@ def upload_image_to_cloud(file_content: bytes, filename: str) -> str:
         return f"local://{filename}"
 
 def delete_image_from_cloud(public_id: str) -> bool:
-    if not settings.cloudinary_cloud_name:
+    if not CLOUDINARY_AVAILABLE or not settings.cloudinary_cloud_name:
         return True
     
     try:
