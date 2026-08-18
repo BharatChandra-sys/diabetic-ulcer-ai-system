@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Environment files (will be set in Cloud Run)
+.env
+.env.*
+backend/.env
+frontend/.env
+frontend1/.env
+
+# Documentation
+*.md
+docs/
+DEPLOYMENT_GUIDE.md
+README.md
+
+# Frontend
+frontend/
+frontend1/
+node_modules/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Render specific
+render.yaml
+.renderignore
+
+# Test files
+tests/
+test_*.py
+*_test.py
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (will be generated at runtime)
+backend/uploads/
+uploads/
+
+# Model weights (uncomment if models are large and stored elsewhere)
+# backend/models/*.pth
+# backend/models/*.pt
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*.old
