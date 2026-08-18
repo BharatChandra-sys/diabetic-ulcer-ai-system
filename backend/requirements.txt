@@ -1,49 +1,50 @@
-# ── Build tools ──────────────────────────────────────────────────────────────
-setuptools>=69.0.0
-wheel>=0.42.0
-pip>=23.3.0
-
-# ── Web framework ─────────────────────────────────────────────────────────────
+# ── Core Web Framework (Essential) ──────────────────────────────────────────
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
-# ── Database ──────────────────────────────────────────────────────────────────
+# ── Database (Essential) ─────────────────────────────────────────────────────
 sqlalchemy==2.0.23
-psycopg2-binary==2.9.9   # PostgreSQL driver (Render)
+psycopg2-binary==2.9.9
 
-# ── Settings & validation ─────────────────────────────────────────────────────
+# ── Settings & Validation (Essential) ────────────────────────────────────────
 pydantic==2.5.0
 pydantic-settings==2.1.0
 email-validator
 python-dotenv==1.0.0
 
-# ── Auth (legacy JWT kept for fallback during Firebase migration) ─────────────
+# ── Authentication (Essential) ───────────────────────────────────────────────
 python-jose==3.3.0
 passlib[argon2]==1.7.4
-argon2-cffi>=23.1.0
-
-# ── Firebase Admin SDK — ID token verification ────────────────────────────────
 firebase-admin==6.5.0
 
-# ── Image processing ──────────────────────────────────────────────────────────
-pillow>=10.4.0
-opencv-python-headless==4.8.1.78   # headless — no GUI deps on server
-
-# ── ML / AI ───────────────────────────────────────────────────────────────────
-numpy==1.24.3
-scikit-learn==1.3.2
-torch==2.1.1
-torchvision==0.16.1
-shap==0.43.0
-
-# ── Cloud storage ─────────────────────────────────────────────────────────────
-cloudinary==1.36.0
+# ── HTTP Requests (Essential) ────────────────────────────────────────────────
 requests==2.31.0
 
-# ── Monitoring ────────────────────────────────────────────────────────────────
-prometheus-client==0.19.0
-psutil==5.9.6
+# ── Basic Image Processing (Lightweight) ─────────────────────────────────────
+pillow>=10.4.0
 
-# ── Utils ─────────────────────────────────────────────────────────────────────
+# ── Monitoring (Essential) ───────────────────────────────────────────────────
+prometheus-client==0.19.0
+
+# ── Utils ────────────────────────────────────────────────────────────────────
 typing-extensions>=4.8.0
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ML DEPENDENCIES (COMMENTED OUT FOR FREE TIER)
+# Uncomment these when you upgrade to paid tier or need ML features
+# ═══════════════════════════════════════════════════════════════════════════
+
+# # ── ML / AI (Heavy - ~1GB) ────────────────────────────────────────────────
+# numpy==1.24.3
+# scikit-learn==1.3.2
+# torch==2.1.1
+# torchvision==0.16.1
+# shap==0.43.0
+# opencv-python-headless==4.8.1.78
+
+# # ── Cloud Storage (Optional) ──────────────────────────────────────────────
+# cloudinary==1.36.0
+
+# # ── System Monitoring (Optional) ──────────────────────────────────────────
+# psutil==5.9.6

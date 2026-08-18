@@ -8,16 +8,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from prometheus_client import make_asgi_app
 
-from backend.app.database import Base, engine, test_connection
-from backend.app.config import settings
-from backend.app.auth.auth_router import router as auth_router
-from backend.app.migrations import run_migrations, get_migration_status
-from backend.app.routes import (
+from app.database import Base, engine, test_connection
+from app.config import settings
+from app.auth.auth_router import router as auth_router
+from app.migrations import run_migrations, get_migration_status
+from app.routes import (
     health, predict, upload, reports, patients,
     patient_progression, statistics, health_metrics, diagnostics,
 )
-from backend.app.routes import predictions_history, chat, analyze, secure_auth
-from backend.app import models  # noqa: F401 — ensures tables are registered
+from app.routes import predictions_history, chat, analyze, secure_auth
+from app import models  # noqa: F401 — ensures tables are registered
 
 logging.basicConfig(
     level=logging.INFO,
