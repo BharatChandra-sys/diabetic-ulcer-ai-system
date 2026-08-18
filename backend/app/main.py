@@ -103,6 +103,12 @@ app.add_middleware(
 async def log_requests(request: Request, call_next):
     import time
     start = time.time()
+    
+    # Let CORS middleware handle OPTIONS requests without logging
+    if request.method == "OPTIONS":
+        response = await call_next(request)
+        return response
+    
     response = await call_next(request)
     ms = (time.time() - start) * 1000
     logger.info(f"{request.method} {request.url.path} → {response.status_code} ({ms:.0f}ms)")
@@ -158,6 +164,13 @@ def root():
         "docs": "/docs",
         "health": "/health",
     }
+
+
+# ── Global OPTIONS handler (fallback for CORS preflight) ─────────────────────
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
+    """Catch-all OPTIONS handler for CORS preflight requests"""
+    return JSONResponse(content={"message": "OK"}, status_code=200)
 
 
 if __name__ == "__main__":
