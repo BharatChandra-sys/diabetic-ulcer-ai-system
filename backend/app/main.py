@@ -80,13 +80,10 @@ app = FastAPI(
 )
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
-# Allow all origins in development, specific origins in production
-if settings.environment == "production":
-    cors_origins = settings.get_cors_origins()
-    logger.info(f"CORS origins (production): {cors_origins}")
-else:
-    cors_origins = ["*"]
-    logger.info("CORS origins (development): *")
+# TEMPORARY: Allow all origins for debugging
+# TODO: Restrict to specific origins in production
+cors_origins = ["*"]
+logger.info(f"CORS origins: {cors_origins}")
 
 app.add_middleware(
     CORSMiddleware,

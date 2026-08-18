@@ -92,13 +92,24 @@ export default function FootScanAnalysis() {
       formData.append('image', selectedFile)
 
       const response = await api.post('/predictions/analyze', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 60000 // 60 second timeout for ML inference
       })
 
+      console.log('Analysis response:', response.data)
+
       // Navigate to results page
-      navigate(`/scan-results?id=${response.data.id}`)
+      if (response.data && response.data.id) {
+        navigate(`/scan-results?id=${response.data.id}`)
+      } else {
+        console.error('No ID in response:', response.data)
+        setError('Invalid response from server. Please try again.')
+      }
     } catch (err) {
-      setError('Failed to analyze image. Please try again.')
+      console.error('Analysis error:', err)
+      console.error('Error response:', err.response?.data)
+      console.error('Error status:', err.response?.status)
+      setError(err.response?.data?.detail || 'Failed to analyze image. Please try again.')
     } finally {
       setLoading(false)
     }
