@@ -8,22 +8,32 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 from prometheus_client import make_asgi_app
 
-from app.database import Base, engine, test_connection
-from app.config import settings
-from app.auth.auth_router import router as auth_router
-from app.migrations import run_migrations, get_migration_status
-from app.routes import (
-    health, predict, upload, reports, patients,
-    patient_progression, statistics, health_metrics, diagnostics,
-)
-from app.routes import predictions_history, chat, analyze, secure_auth
-from app import models  # noqa: F401 — ensures tables are registered
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+from app.database import Base, engine, test_connection
+from app.config import settings
+from app.auth.auth_router import router as auth_router
+from app.migrations import run_migrations, get_migration_status
+from app.routes import (
+    health, upload, reports, patients,
+    statistics, health_metrics, diagnostics,
+)
+from app.routes import predictions_history, chat, secure_auth
+
+# Try to import ML-dependent routes (requires torch, numpy, etc.)
+ML_ROUTES_AVAILABLE = False
+try:
+    from app.routes import predict, patient_progression, analyze
+    ML_ROUTES_AVAILABLE = True
+    logger.info("✓ ML routes available")
+except ImportError as e:
+    logger.warning(f"⚠️  ML routes disabled (missing dependencies): {e}")
+    
+from app import models  # noqa: F401 — ensures tables are registered
 
 
 @asynccontextmanager
@@ -116,17 +126,23 @@ app.mount("/metrics", metrics_app)
 app.include_router(secure_auth.router)  # Secure auth (no Firebase in frontend)
 app.include_router(auth_router)
 app.include_router(health.router)
-app.include_router(predict.router)
 app.include_router(upload.router)
 app.include_router(reports.router)
 app.include_router(patients.router)
-app.include_router(patient_progression.router)
 app.include_router(statistics.router)
 app.include_router(health_metrics.router)
 app.include_router(diagnostics.router)
 app.include_router(predictions_history.router)
 app.include_router(chat.router)
-app.include_router(analyze.router)
+
+# Include ML routes only if dependencies are available
+if ML_ROUTES_AVAILABLE:
+    app.include_router(predict.router)
+    app.include_router(patient_progression.router)
+    app.include_router(analyze.router)
+    logger.info("✓ ML prediction endpoints registered")
+else:
+    logger.warning("⚠️  ML prediction endpoints disabled (upgrade to paid tier for ML features)")
 
 
 @app.get("/", tags=["root"])
