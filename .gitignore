@@ -126,6 +126,9 @@ frontend1/.vite/
 # Secrets (NEVER commit)
 # -------------------------
 .env
+.env.*
+**/.env
+**/.env.*
 frontend/.env
 frontend/.env.*
 frontend1/.env
